@@ -1,0 +1,249 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Set Basic Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Agent Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-02T20:26:46.587Z",
+  "id": "C73LcGTp4rws3ZvQ",
+  "isArchived": false,
+  "meta": null,
+  "name": "gpt-oss local",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6cd2b985-0832-4eb1-9f79-6c1896e1924c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Write a linked in post comparing n8n vs make.com",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        384,
+        0
+      ],
+      "id": "c48b6278-8941-4884-8cf9-ad84acd66106",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        96,
+        512
+      ],
+      "id": "5b1ed531-5a66-474a-8f22-4d051e92e7dc",
+      "name": "Ollama Chat Model"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        240
+      ],
+      "id": "225a9dcd-9423-41f2-b3de-db56505e188f",
+      "name": "When chat message received",
+      "webhookId": "fb041e22-4428-4422-8949-b202c1109f98"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        240
+      ],
+      "id": "1b49cb90-1711-4968-b8ea-d02dcd43e265",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        512
+      ],
+      "id": "cedea0a4-dd7f-4549-bdd8-da80914b7743",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        512
+      ],
+      "id": "1ec05f70-4bd0-43a5-9a38-510beb129d64",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fbed2301-6a05-488f-8137-0fdf07b42c6b",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        240
+      ],
+      "id": "84c4fb42-3ec8-43cc-b5a2-b63f9b412d19",
+      "name": "Set Agent Result"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2c16688-3722-4a64-b01d-05a17a4e7588",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        0
+      ],
+      "id": "08b0dc9b-03b5-4fd8-b63f-3cd53a12fda5",
+      "name": "Set Basic Result"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-02T20:26:46.589Z",
+      "updatedAt": "2025-10-02T20:26:46.589Z",
+      "role": "workflow:owner",
+      "workflowId": "C73LcGTp4rws3ZvQ",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-02T20:26:46.587Z",
+  "versionId": "5aaf6299-00aa-46f7-abce-878210bbd340"
+}
