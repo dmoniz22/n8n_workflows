@@ -1,0 +1,66 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-09-07T04:29:15.699Z",
+  "id": "CBaQGiXjO024ObOD",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 7",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1siJlSWj9SxbpYO6vYSwmXpDJVvNuoLVP",
+          "mode": "id"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "56e00f3a-b8c9-483c-bd12-1c1f9107de86",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-07T04:29:15.703Z",
+      "updatedAt": "2025-09-07T04:29:15.703Z",
+      "role": "workflow:owner",
+      "workflowId": "CBaQGiXjO024ObOD",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:23:59.000Z",
+  "versionId": "1180ef09-2897-4f44-a64d-1e813e75c54f"
+}
