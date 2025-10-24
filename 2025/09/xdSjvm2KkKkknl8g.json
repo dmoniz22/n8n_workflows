@@ -1,0 +1,246 @@
+{
+  "active": false,
+  "connections": {
+    "List Files in 'To-Process' Folder1": {
+      "main": [
+        [
+          {
+            "node": "Process Each File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Each File1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless1": {
+      "main": [
+        [
+          {
+            "node": "Move Processed File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-02T22:41:12.345Z",
+  "id": "xdSjvm2KkKkknl8g",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+            "mode": "id"
+          },
+          "whatToSearch": "all"
+        },
+        "options": {}
+      },
+      "id": "2a6b1e2b-6448-4cb6-bac3-1e0e1f80d307",
+      "name": "List Files in 'To-Process' Folder1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -688,
+        224
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6630a17b-7644-4a83-af5f-62d20daf284d",
+      "name": "Process Each File1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -496,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json[\"id\"] }}",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "id": "40ff1894-39d1-4e22-85df-4ba411e1ea4b",
+      "name": "Download File1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -272,
+        240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://paperless.themonizes.com/api/documents/post_document/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token 22051845d008ccaa308de6d9f6f947ded185ba51"
+            },
+            {
+              "name": "Content-Type",
+              "value": "multipart/form-data"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "cb539175-4545-481f-a6c5-e503aa4791eb",
+      "name": "Upload to Paperless1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -32,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": "={{ $json[\"id\"] }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        }
+      },
+      "id": "3d657d33-1851-4288-a4da-251ce7c34e4c",
+      "name": "Move Processed File1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        224
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        256,
+        368
+      ],
+      "id": "b39d7bd7-36f5-4139-9eea-1ee99fb95d81",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the binary data from the previous node\nconst binaryData = items[0].binary.data;\n\n// Create a new item with properly formatted data for multipart/form-data\nreturn [\n  {\n    json: {\n      // Include any other metadata you want to send\n      title: items[0].json.name,\n      created: items[0].json.createdTime\n    },\n    binary: {\n      // Keep the binary data\n      data: binaryData\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        336
+      ],
+      "id": "8561ddaf-cf01-4de8-a002-7501c679ec4f",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-02T22:41:12.348Z",
+      "updatedAt": "2025-09-02T22:41:12.348Z",
+      "role": "workflow:owner",
+      "workflowId": "xdSjvm2KkKkknl8g",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:24:10.000Z",
+  "versionId": "b6597b92-3301-4157-bff7-d65c23db9b5d"
+}
