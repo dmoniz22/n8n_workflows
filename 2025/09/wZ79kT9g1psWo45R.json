@@ -1,0 +1,206 @@
+{
+  "active": false,
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pull News": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Pull News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-03T16:11:04.212Z",
+  "id": "wZ79kT9g1psWo45R",
+  "isArchived": true,
+  "meta": {
+    "templateId": "4375",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Automatic News Summarization & Email Digest with GPT-4, NewsAPI and Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "c5091fb1-5bc5-44bc-b804-201d5ffe0672",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        1280,
+        512
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are act as news expert and collect all news headlines  in below and summarise in a maximum of 10 bullets.\n\n\n {{ $json.articles[1].title }}",
+        "options": {}
+      },
+      "id": "60424e56-7429-48c5-831c-056e9874b8a3",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1840,
+        512
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/top-headlines",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "category",
+              "value": "politics"
+            },
+            {
+              "name": "apiKey",
+              "value": "cb44bc038da542ddb59902edaf7dc270"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "792376e9-3312-4862-94a0-e38de2e6dda5",
+      "name": "Pull News",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1552,
+        512
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "sendTo": "david@davidmoniz.com",
+        "subject": "News Headlines",
+        "emailType": "text",
+        "message": "=Hi David,\nPlease find the top news headlines as below:\n\n{{ $('AI Agent').item.json.output }}",
+        "options": {}
+      },
+      "id": "596c8d5d-3c03-435e-abab-e7b93de28471",
+      "name": "Send Mail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        2224,
+        512
+      ],
+      "webhookId": "e5c02fba-64bc-47f0-b752-2de2b8e6b03c",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vNvWEJRKomIgfIF5",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "📰 AI News Digest Agent: Auto News Summarizer & Emailer\nAutomatically fetch top news headlines, generate AI-powered summaries, and send personalized digests to your subscriber list. Perfect for:\n✅ Newsletter creators — deliver curated news content effortlessly\n✅ Teams & organizations — keep everyone informed with regular updates\n✅ Content curators — transform news into digestible insights\n\n⚙️ What's Used\nn8n Nodes:\nSchedule Trigger → News API → AI Agent → OpenAI Chat Model → Google Sheets → Gmail\nExternal Tools:\n\nNewsAPI – Fetch latest headlines from reliable sources\nOpenAI GPT-4 – Generate concise 5-bullet summaries\nGoogle Sheets – Manage subscriber email lists\nGmail – Send personalized news digests\n\n\n🔑 Setup – Credentials Needed\n\nNewsAPI Key → Free account at newsapi.org for headline access\nOpenAI API Key → For AI-powered news summarization\nGoogle Sheets OAuth2 → Access subscriber email lists\nGmail OAuth2 → Send automated newsletter emails\n\n\n📊 Google Sheets Structure Required\nCreate a simple subscriber spreadsheet:\n\nName (subscriber's name for personalization)\nEmail (recipient email addresses)\n\n\n🚀 Workflow Steps\n\nScheduled News Collection\nRuns every 10 minutes to fetch latest US headlines from NewsAPI\nAI-Powered Summarization\nGPT processes news headlines and creates concise 5-bullet summaries\nSubscriber List Access\nRetrieves email list from Google Sheets for distribution\nPersonalized Email Delivery\nSends customized news digests to each subscriber with their name\n\n\n💡 Pro Tips\n\nCustomize the country parameter (US, UK, CA, etc.) for regional news\nAdjust schedule frequency based on your audience preferences\nAdd category filters (technology, business, sports) for niche newsletters\nMonitor email delivery rates and subscriber engagement\nTest with small subscriber lists before scaling up\n\n\n🛠️ Customize It\n\nAdd multiple news sources for comprehensive coverage\nInclude trending topics and sentiment analysis\nConnect to Mailchimp or other email marketing platforms\nAdd unsubscribe functionality and list management\nCreate different digest formats (daily, weekly, breaking news)",
+        "height": 1280,
+        "width": 740
+      },
+      "id": "b4146559-5d6c-4db3-aad5-12a73621aa90",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": "gemma3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        720
+      ],
+      "id": "0c97feb3-a85d-4061-8064-f159482c6580",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3QVkIOnbHJ33glWP",
+          "name": "Ollama account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Vancouver",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-03T16:11:04.217Z",
+      "updatedAt": "2025-09-03T16:11:04.217Z",
+      "role": "workflow:owner",
+      "workflowId": "wZ79kT9g1psWo45R",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-28T18:10:17.000Z",
+  "versionId": "ddff4857-b3ff-4505-a29e-ba408c0970bf"
+}
