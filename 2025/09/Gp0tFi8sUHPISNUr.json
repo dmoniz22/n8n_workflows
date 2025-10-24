@@ -1,0 +1,218 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Write Binary File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Truncate Text": {
+      "main": [
+        [
+          {
+            "node": "Ollama Generate Summary + Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Generate Summary + Score": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless-ngx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless-ngx": {
+      "main": [
+        [
+          {
+            "node": "Set Clinical Relevance Score (Custom Field)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Clinical Relevance Score (Custom Field)": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Zotero": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Binary File": {
+      "main": [
+        [
+          {
+            "node": "Extract & Truncate Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-10T22:22:53.465Z",
+  "id": "Gp0tFi8sUHPISNUr",
+  "isArchived": true,
+  "meta": null,
+  "name": "My workflow 9",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1643c7e9-3e09-4eb7-a2e4-4f93c13e8d6c",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "command": "pdftotext -layout /tmp/paper.pdf /tmp/paper.txt && head -c 24000 /tmp/paper.txt > /tmp/paper_truncated.txt"
+      },
+      "id": "387ce3a6-ec74-48bf-a527-96dcafa20684",
+      "name": "Extract & Truncate Text",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "options": {
+          "response": {}
+        }
+      },
+      "id": "d37de3e1-1397-4e1c-8f27-3fd22597f948",
+      "name": "Ollama Generate Summary + Score",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -112,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://YOUR-PAPERLESS-SERVER/api/documents/post_document/",
+        "authentication": "predefinedCredentialType",
+        "options": {}
+      },
+      "id": "bc127c37-c749-47d8-b04b-f970ea31a00d",
+      "name": "Upload to Paperless-ngx",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        112,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://YOUR-PAPERLESS-SERVER/api/documents/' + $json.id + '/' }}",
+        "authentication": "predefinedCredentialType",
+        "options": {}
+      },
+      "id": "6d029a69-6fab-45c5-b2c8-89a4d7d5d1a8",
+      "name": "Set Clinical Relevance Score (Custom Field)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        336,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.zotero.org/users/YOUR_ZOTERO_USER_ID/items?key=YOUR_ZOTERO_API_KEY",
+        "options": {}
+      },
+      "id": "bf1ca677-cad1-4aa1-8b3c-79ab9c7e47eb",
+      "name": "Post to Zotero",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        112,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e9c38774-703f-43b1-b2c1-3f6834fe64ce",
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "fileName": "/tmp/paper.pdf",
+        "options": {}
+      },
+      "id": "6a496181-d7f3-4209-8051-f29a2cd2e9e8",
+      "name": "Write Binary File",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -112
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-10T22:22:53.469Z",
+      "updatedAt": "2025-09-10T22:22:53.469Z",
+      "role": "workflow:owner",
+      "workflowId": "Gp0tFi8sUHPISNUr",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-21T06:35:08.000Z",
+  "versionId": "cfb9e4b5-6769-443f-ba1c-86fa7239c066"
+}
