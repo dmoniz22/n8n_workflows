@@ -1,0 +1,290 @@
+{
+  "active": false,
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-26T22:08:02.157Z",
+  "id": "AzYesaJvxn58f0Ql",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 11",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58",
+          "mode": "list",
+          "cachedResultName": "Volunteer Sign Up for 1st Fairfield Apple Day Fundraiser (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 513655983,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58/edit#gid=513655983"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "b40c1118-b788-432d-ad32-acb13a71f791",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "EyEQenN1O99r9pfC",
+          "name": "1st Fairfield Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use the attached google sheet to collect the data",
+        "options": {
+          "systemMessage": "YOu are an expert executive assistant that is helping to organize an event with a number of attendees and a number of start times. The users will fill out the form providing their email address, youth volunteers name, parent/guardian name, phone number. They will then select a location where they will volunteer as well as a start and end time. The event is being held on November 2nd 2025. I need you to collect the responses from the attached google sheet and update the event on the attached google calendar. I want the events to be split based on location and start time with a list of attendees for each location and start time. The time zone is America/Vancouver. The title of the event should be the location signed up for. For each new row that is for the same location and start your are to add the new attendee to the event if it is already created rather than start a new event.\n\nOnce the attendee has been added to the calendar I then want a new sheet made to the google sheet document that will list the attendees for each location and start time. This list just needs to have the youth volunteer name entered as the attendee."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        -96
+      ],
+      "id": "5c41aa96-a8fb-46fe-994e-4ee22af963d1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        112
+      ],
+      "id": "d166e84e-3730-4bdb-8128-7efbbab17793",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3QVkIOnbHJ33glWP",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_742eef00b146f69402294f02193e014c2e2b4a5035879320585df2372c5367eb@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Apple Day"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('attendees0_Attendees', ``, 'string') }}"
+          ],
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        112
+      ],
+      "id": "8ad8a200-f1ff-4f88-9e17-f190a4c46463",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "z6rcEaPAsGbjrhwN",
+          "name": "1st Fairfield Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58",
+          "mode": "list",
+          "cachedResultName": "Volunteer Sign Up for 1st Fairfield Apple Day Fundraiser (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 513655983,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58/edit#gid=513655983"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        112
+      ],
+      "id": "21c04568-4743-44f4-832b-cee3b4e09d51",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tRwCLExNNprHJFeH",
+          "name": "1st Fairfield Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58",
+          "mode": "list",
+          "cachedResultName": "Volunteer Sign Up for 1st Fairfield Apple Day Fundraiser (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Sheet', ``, 'string') }}",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        112
+      ],
+      "id": "b99940d4-abfa-40c1-97a0-d1f5ddbb7b20",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tRwCLExNNprHJFeH",
+          "name": "1st Fairfield Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-26T22:08:02.162Z",
+      "updatedAt": "2025-09-26T22:08:02.162Z",
+      "role": "workflow:owner",
+      "workflowId": "AzYesaJvxn58f0Ql",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": {
+    "node:Google Sheets Trigger": {
+      "documentId": "1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58",
+      "sheetId": 513655983,
+      "lastRevision": 68,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=1DT-XcFEXYyGFe6nNitPYlTCtSP4YWNeX4mM4rJTey58&revision=68&exportFormat=xlsx"
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-28T18:05:39.000Z",
+  "versionId": "cec0ccfa-38b2-4161-8741-e8504d965b76"
+}
