@@ -1,0 +1,839 @@
+{
+  "active": false,
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get files": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete single file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Update single file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download files": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear collection": {
+      "main": [
+        [
+          {
+            "node": "Get files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Update single file",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Update single file",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader1",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Clear collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-26T05:49:21.559Z",
+  "id": "rcmw4bt35FW9vU44",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5140"
+  },
+  "name": "Build and Update RAG System with Google Drive, Qdrant, and Gemini Chat",
+  "nodes": [
+    {
+      "id": "23afa2cc-7085-474f-aa9e-b110ef17208c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        448,
+        360
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "id": "71115f33-f461-4942-9df1-e554e6432054",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1788,
+        620
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 1.1
+    },
+    {
+      "id": "81d855d2-a883-4e74-ae2a-1a4e722af4d7",
+      "name": "Default Data Loader1",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1928,
+        620
+      ],
+      "parameters": {
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Download files').item.json.id }}"
+              },
+              {
+                "name": "file_name",
+                "value": "={{ $('Download files').item.json.name }}"
+              }
+            ]
+          }
+        },
+        "dataType": "binary",
+        "binaryMode": "specificField"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "4e5539a5-0f3a-4de9-ba69-0eb7d9c00804",
+      "name": "Qdrant Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        1848,
+        380
+      ],
+      "parameters": {
+        "mode": "insert",
+        "options": {},
+        "qdrantCollection": {
+          "__rl": true,
+          "mode": "list",
+          "value": "negozio-emporio-verde",
+          "cachedResultName": "negozio-emporio-verde"
+        }
+      },
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "8f944f0e-51a0-470e-9735-1ed539522acb",
+      "name": "Create collection",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        708,
+        -60
+      ],
+      "parameters": {
+        "url": "http://QDRANTURL/collections/COLLECTION",
+        "method": "PUT",
+        "options": {},
+        "jsonBody": "{\n  \"vectors\": {\n    \"size\": 1536,\n    \"distance\": \"Cosine\"  \n  },\n  \"shard_number\": 1,  \n  \"replication_factor\": 1,  \n  \"write_consistency_factor\": 1 \n}",
+        "sendBody": true,
+        "sendHeaders": true,
+        "specifyBody": "json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "typeVersion": 4.2
+    },
+    {
+      "id": "25c035aa-7a07-47cf-8878-44ac2eab0c3d",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        1908,
+        820
+      ],
+      "parameters": {
+        "options": {},
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "2ade51da-1711-4f71-8bd9-ebd3b6494b0b",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1268,
+        360
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 3
+    },
+    {
+      "id": "74a224b0-8755-41ef-bb55-22e83b7d762d",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        2228,
+        380
+      ],
+      "webhookId": "3d477cc3-8182-43e9-ae61-23e8ce308887",
+      "parameters": {},
+      "typeVersion": 1.1
+    },
+    {
+      "id": "1c0d5b8c-e53e-47d3-aaac-ddccae80f280",
+      "name": "Embeddings OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1468,
+        1360
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 1.1
+    },
+    {
+      "id": "f838f548-52dd-4aaf-aa97-9a8029018a1a",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1668,
+        1400
+      ],
+      "parameters": {
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Download file').item.json.file_id }}"
+              },
+              {
+                "name": "file_name",
+                "value": "={{ $binary.data.fileName}}"
+              }
+            ]
+          }
+        },
+        "dataType": "binary",
+        "binaryMode": "specificField"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "07bb3ae1-145f-4784-8409-d3bc73d5522c",
+      "name": "Recursive Character Text Splitter1",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        1708,
+        1600
+      ],
+      "parameters": {
+        "options": {},
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "dfa7b994-13b7-490f-82b7-5ae4ea1e2e7f",
+      "name": "Delete single file",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1208,
+        860
+      ],
+      "parameters": {
+        "url": "http://QDRANTURL/collections/COLLECTION/points/delete",
+        "method": "POST",
+        "options": {},
+        "jsonBody": "={\n  \"filter\": {\n    \"must\": [\n      {\n          \"key\": \"metadata.file_id\",\n          \"match\": { \"value\": \"{{$json.file_id}}\" }\n        }\n    ]\n  }\n}",
+        "sendBody": true,
+        "sendHeaders": true,
+        "specifyBody": "json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "typeVersion": 4.2
+    },
+    {
+      "id": "44bf5e40-3947-4288-a7ba-7797ea6ad266",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        988,
+        -140
+      ],
+      "parameters": {
+        "color": 6,
+        "width": 880,
+        "height": 220,
+        "content": "# STEP 1\n\n## Create Qdrant Collection\nChange:\n- QDRANTURL\n- COLLECTION"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "56e6534e-e191-4756-8bcf-d9ff8fc88b5f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        688,
+        840
+      ],
+      "parameters": {
+        "height": 360,
+        "content": "# STEP 3\n\n## FILE ID\nSet Google Drive File ID to update\n"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "f7098791-889a-4e9a-bd8f-f3b52dfc8839",
+      "name": "Clear collection",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        708,
+        360
+      ],
+      "parameters": {
+        "url": "http://QDRANTURL/collections/COLLECTION/points/delete",
+        "method": "POST",
+        "options": {},
+        "jsonBody": "{\n  \"filter\": {}\n}",
+        "sendBody": true,
+        "sendHeaders": true,
+        "specifyBody": "json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "typeVersion": 4.2
+    },
+    {
+      "id": "d75a193e-e0cd-469a-8222-1ff183e2aa83",
+      "name": "Get files",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        968,
+        360
+      ],
+      "parameters": {
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive",
+            "cachedResultName": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "1RO5ByPhq2yvYLmbapTNC_kKdU5lZd4W5",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1RO5ByPhq2yvYLmbapTNC_kKdU5lZd4W5",
+            "cachedResultName": "Test Negozio"
+          }
+        },
+        "options": {},
+        "resource": "fileFolder"
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "X3yfiEOwfbLV6LED",
+          "name": "Google Drive account"
+        }
+      },
+      "typeVersion": 3
+    },
+    {
+      "id": "4e5d5bd2-2aae-4d3b-978e-3ed29b641bb3",
+      "name": "Download files",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1548,
+        380
+      ],
+      "parameters": {
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        },
+        "operation": "download"
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "X3yfiEOwfbLV6LED",
+          "name": "Google Drive account"
+        }
+      },
+      "typeVersion": 3
+    },
+    {
+      "id": "074333a4-fbcc-42ce-aa05-212d545fdcb1",
+      "name": "Download file",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1208,
+        1120
+      ],
+      "parameters": {
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.file_id }}"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        },
+        "operation": "download"
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "X3yfiEOwfbLV6LED",
+          "name": "Google Drive account"
+        }
+      },
+      "typeVersion": 3
+    },
+    {
+      "id": "e4ee0aa9-e140-44b9-b581-6d98cb2857a9",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        288,
+        1740
+      ],
+      "webhookId": "97d60090-1717-4195-bf27-2e3c3105b7f8",
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 1.1
+    },
+    {
+      "id": "db644cc4-da46-4e9e-a092-f91762ca1c6b",
+      "name": "Question and Answer Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "position": [
+        608,
+        1740
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 1.5
+    },
+    {
+      "id": "9e7ebe5e-a854-44dc-8cb3-ec1663121b93",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        548,
+        1940
+      ],
+      "parameters": {
+        "options": {},
+        "modelName": "models/gemini-1.5-flash"
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "l0Rdj6RhYUqFS4rv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "d7e29bec-2b8c-400c-b6d7-a82d7a2865a7",
+      "name": "Vector Store Retriever",
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "position": [
+        768,
+        1960
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "id": "e490e747-5395-4460-bdea-0781145f30b1",
+      "name": "Qdrant Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        788,
+        2160
+      ],
+      "parameters": {
+        "options": {},
+        "qdrantCollection": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ocr_mistral_test",
+          "cachedResultName": "ocr_mistral_test"
+        }
+      },
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      },
+      "typeVersion": 1.1
+    },
+    {
+      "id": "65261873-4ca5-4e23-bc65-220f971eb5b4",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1088,
+        1740
+      ],
+      "parameters": {
+        "width": 500,
+        "height": 120,
+        "content": "## STEP 4\nTest the RAG"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "ffbaabd0-7fd7-41db-bb71-4cccadf3e9c8",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        668,
+        2300
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "typeVersion": 1.2
+    },
+    {
+      "id": "23053690-c978-4b05-be26-e94f88c9d92f",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "parameters": {
+        "color": 4,
+        "width": 620,
+        "height": 520,
+        "content": "# STEP 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Documents vectorization with Qdrant and Google Drive\nChange:\n- QDRANTURL\n- COLLECTION"
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "153a5098-56d1-4b7c-bb12-e6054db927a0",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        748,
+        1020
+      ],
+      "parameters": {
+        "options": {},
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b413a226-0641-4ed8-9951-d17b6a6a9a4b",
+              "name": "file_id",
+              "type": "string",
+              "value": "DRIVEFILE_ID"
+            }
+          ]
+        }
+      },
+      "typeVersion": 3.4
+    },
+    {
+      "id": "796f3ad4-e041-4af6-b3a5-72b3c3730c49",
+      "name": "Update single file",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        1548,
+        1120
+      ],
+      "parameters": {
+        "mode": "insert",
+        "options": {},
+        "qdrantCollection": {
+          "__rl": true,
+          "mode": "list",
+          "value": "negozio-emporio-verde",
+          "cachedResultName": "negozio-emporio-verde"
+        }
+      },
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "id": "058c4929-ff59-41ca-8131-178e9038b354",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        648,
+        -440
+      ],
+      "parameters": {
+        "color": 3,
+        "width": 840,
+        "height": 220,
+        "content": "# Enables full or incremental updates to documents in RAG system using Qdrant \nThis workflow automates the creation and management of a Retrieval-Augmented Generation (RAG) system using Qdrant as a vector store and Google Drive as the document source. It **enables full or incremental updates to documents** in the Qdrant vector database and integrates with a chatbot using Google Gemini for question answering."
+      },
+      "typeVersion": 1
+    }
+  ],
+  "pinData": null,
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": null,
+  "shared": [
+    {
+      "createdAt": "2025-09-26T05:49:21.562Z",
+      "updatedAt": "2025-09-26T05:49:21.562Z",
+      "role": "workflow:owner",
+      "workflowId": "rcmw4bt35FW9vU44",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-26T05:49:21.559Z",
+  "versionId": "d92bbbb9-aeb3-4972-87fc-d1fe77519997"
+}
