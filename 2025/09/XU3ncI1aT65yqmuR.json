@@ -1,0 +1,363 @@
+{
+  "active": false,
+  "connections": {
+    "IF: Not Already Mapped": {
+      "main": [
+        [
+          {
+            "node": "Create folder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read All Mappings from Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All Mappings from Sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF: Not Already Mapped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Save Mapping to Google Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Mapping to Google Sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait 1s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "Wait 1s": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-09-08T21:19:54.426Z",
+  "id": "XU3ncI1aT65yqmuR",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Transfer Google Drive accounts",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs",
+          "mode": "list",
+          "cachedResultName": "Data Migration Mapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "6a427ad3-d7c5-410e-ab93-9425befe91fd",
+      "name": "Read All Mappings from Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        -832,
+        -320
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9Aj0grljLJtSW5Dx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json[\"mappingFound\"] }}",
+              "value2": "={{ false }}"
+            }
+          ]
+        }
+      },
+      "id": "34a84aaf-612a-4222-8754-1feb7b180c64",
+      "name": "IF: Not Already Mapped",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs",
+          "mode": "list",
+          "cachedResultName": "Data Migration Mapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yixZKR0YCWZ5y6dOl7aKYQoFBkGEmgBzq6MAxqoiRZs/edit#gid=0"
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "Source Folder ID",
+              "fieldValue": "={{ $node['Search files and folders'].json.id }}"
+            },
+            {
+              "fieldId": "Destination Folder ID",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "Folder Name",
+              "fieldValue": "={{ $node['Search files and folders'].json.name }}"
+            },
+            {
+              "fieldId": "Created At",
+              "fieldValue": "={{ $node['Search files and folders'].json.createdTime }}"
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "83a88738-cf98-47cd-9a23-78d7c3f6ece5",
+      "name": "Save Mapping to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        512,
+        -144
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9Aj0grljLJtSW5Dx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        -112
+      ],
+      "id": "122e67af-3b23-4554-82ca-d13639fb3390",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1t05IPFeBK2goM1wl_6sHtB4wdePDctE2",
+            "mode": "id"
+          },
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -832,
+        -112
+      ],
+      "id": "4118330a-f18e-4a6b-95b6-76e980ca102b",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "u0re3DMCK7akBSYR",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Get the data object from the item's '.json' property. This is the standard n8n method.\nconst currentFolder = $json.item;\n\n// Guard Clause: Check if the data object exists and contains an 'id'.\nif (!currentFolder || !currentFolder.id) {\n  // If the data is invalid, filter this item out and move to the next.\n  return null;\n}\n\n// Get the entire list of mappings from the Google Sheet node.\nconst allMappings = $('Read All Mappings from Sheet').all();\n\n// Check if a mapping for the current folder already exists in the sheet.\nconst foundMapping = allMappings.find(\n  (mapping) => mapping.json['Source Folder ID'] === currentFolder.id\n);\n\n// Add a boolean 'mappingFound' property to our data object.\ncurrentFolder.mappingFound = !!foundMapping;\n\n// If the folder was NOT found in the sheet, we need to find its parent's new ID.\nif (!currentFolder.mappingFound) {\n  const sourceParentId = currentFolder.parents?.[0];\n  let destinationParentId = 'root'; // Default to the root directory.\n\n  if (sourceParentId) {\n    // Search the mapping list for the parent's ID.\n    const parentMapping = allMappings.find(\n      (mapping) => mapping.json['Source Folder ID'] === sourceParentId\n    );\n\n    // If we found the parent's mapping, use its destination ID.\n    if (parentMapping) {\n      destinationParentId = parentMapping.json['Destination Folder ID'];\n    }\n  }\n  // Add the destination parent ID to our data object.\n  currentFolder.destinationParentId = destinationParentId;\n}\n\n// Return the original item. Its '.json' property has now been modified with our new data.\nreturn $json.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -128
+      ],
+      "id": "da858094-4058-4bd6-a5e6-745c5922de6b",
+      "name": "Code",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $node['Search files and folders'].json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7",
+          "mode": "list",
+          "cachedResultName": "Data Migration",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        304,
+        -144
+      ],
+      "id": "3de38330-3e2e-4028-b2ec-088c9ca3f829",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YjlqMLFJ2ImPRZ6Y",
+          "name": "Google Drive 1st fairfield"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        -144
+      ],
+      "id": "c7d24ceb-0bc4-4af9-b109-60de76936a3f",
+      "name": "Wait 1s",
+      "webhookId": "0989f874-c23a-41af-9c40-db2ba3835767"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        48
+      ],
+      "id": "d6cf58c8-2f43-4247-bde4-88756811a0c4",
+      "name": "Wait",
+      "webhookId": "43debd9e-bd31-4b53-ae35-30d19fb97f54"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-08T21:19:54.462Z",
+      "updatedAt": "2025-09-08T21:19:54.462Z",
+      "role": "workflow:owner",
+      "workflowId": "XU3ncI1aT65yqmuR",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:10:41.000Z",
+  "versionId": "f34fe4b4-171b-4235-954c-6ea9798055a1"
+}
