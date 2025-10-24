@@ -1,0 +1,272 @@
+{
+  "active": false,
+  "connections": {
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Format File for Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format File for Upload": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless": {
+      "main": [
+        [
+          {
+            "node": "Move Processed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-03T15:42:32.335Z",
+  "id": "rGxb4rQUyTP4Y8xW",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        240
+      ],
+      "id": "6decf78e-f377-416f-9682-a07d0f129a2b"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": ""
+        },
+        "options": {}
+      },
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "5095d78b-8807-42dc-9097-fd7882dc8c64",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "options": {
+          "fileName": "={{ $json.name }}",
+          "mimeType": "application/text"
+        }
+      },
+      "name": "Format File for Upload",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [
+        208,
+        240
+      ],
+      "id": "84386a67-d916-4d47-958f-9e85196c08da"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://paperless.themonizes.com/api/documents/post_document/?format=json",
+        "options": {
+          "bodyContentType": "multipart-form-data"
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "document",
+              "value": "={{ $binary.data }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $('Download File').item.json.name }}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Token 22051845d008ccaa308de6d9f6f947ded185ba51"
+            }
+          ]
+        }
+      },
+      "name": "Upload to Paperless",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        400,
+        240
+      ],
+      "id": "7e6aec66-ef98-4497-98a5-75de0901d5fa"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "move"
+      },
+      "name": "Move Processed File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        608,
+        240
+      ],
+      "id": "e1e236a0-563a-4134-bff8-4f72d4f595ff",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c3387baa-ff93-491e-9d76-28d7b9b49ebc"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+          "mode": "id"
+        },
+        "event": "watchFolderUpdated"
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        48
+      ],
+      "id": "d4b82c51-ace5-4d0a-9606-7faaa9262b9c",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+            "mode": "id"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "name",
+            "id",
+            "kind"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -192,
+        240
+      ],
+      "id": "985cf24e-2879-4f2c-9f23-4084f1a445f3",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-03T15:42:32.339Z",
+      "updatedAt": "2025-09-03T15:42:32.339Z",
+      "role": "workflow:owner",
+      "workflowId": "rGxb4rQUyTP4Y8xW",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:13:49.000Z",
+  "versionId": "e5827ec1-3edb-4774-a58f-d4fe1f9517d6"
+}
