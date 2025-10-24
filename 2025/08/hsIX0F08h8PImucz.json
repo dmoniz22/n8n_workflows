@@ -1,0 +1,54 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-08-30T06:15:41.761Z",
+  "id": "hsIX0F08h8PImucz",
+  "isArchived": true,
+  "meta": null,
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            },
+            {
+              "daysInterval": null
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "01371885-915a-44c4-a357-36289df97ce6",
+      "name": "Schedule Trigger",
+      "retryOnFail": true
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-08-30T06:15:41.768Z",
+      "updatedAt": "2025-08-30T06:15:41.768Z",
+      "role": "workflow:owner",
+      "workflowId": "hsIX0F08h8PImucz",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-02T15:43:16.000Z",
+  "versionId": "568110a2-4392-41b9-9ae7-4c677a5b73e3"
+}
