@@ -1,0 +1,824 @@
+{
+  "active": false,
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Check Job Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Update to Completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Split Out": {
+      "main": [
+        []
+      ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Crawl Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update to Processing": {
+      "main": [
+        [
+          {
+            "node": "Create folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Update to Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update to Completed": {
+      "main": [
+        []
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format metadata for payload": {
+      "main": [
+        [
+          {
+            "node": "Check Qdrant Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Qdrant Collection": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Qdrant collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate File From Markdown": {
+      "main": [
+        [
+          {
+            "node": "Format metadata for payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Qdrant collection": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between Pages": {
+      "main": [
+        []
+      ]
+    },
+    "Crawl Website": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Job Completion": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Crawl Next URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crawl Next URL": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-19T17:56:33.793Z",
+  "id": "tfnosLUC0idIQgII",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Firecrawl with crawl",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://firecrawl.themonizes.com/v2/map",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"url\": \"{{ $('Webhook').item.json.body.data.rows[0].site_url }}\",\n    \"limit\": 100000,\n    \"includeSubdomains\": true,\n    \"sitemap\": \"include\"\n  } ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -288,
+        96
+      ],
+      "id": "9e3afadb-a91a-4c32-9fca-ee48a7fac662",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 0.2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        -176
+      ],
+      "id": "515c093e-029c-42db-8b5b-640a8bd84a3b",
+      "name": "Wait",
+      "webhookId": "4016928f-072b-46b2-b3d8-b6d57f04a8dd"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        80,
+        -432
+      ],
+      "id": "c3da5c87-493d-4f48-994e-6669fd9cf8a5",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "links",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        96
+      ],
+      "id": "44157d20-1801-420c-aa26-02025f1a14ec",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.site_title }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1V1JeVwyk4gTo8ADhNgSIWcp9TQg6YgbE",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -288,
+        -176
+      ],
+      "id": "046c3600-3b0e-4fcb-8c33-1707aec532e9",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "projectId": "p9oefmwb0krw2mr",
+        "table": "mv8bm80fy8m0wmq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "Id",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].Id }}"
+            },
+            {
+              "fieldName": "site_url",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_url }}"
+            },
+            {
+              "fieldName": "site_title",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_title }}"
+            },
+            {
+              "fieldName": "site_content",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_content }}"
+            },
+            {
+              "fieldName": "crawled",
+              "fieldValue": "Processing"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        -496,
+        -176
+      ],
+      "id": "c59e4881-0753-4dd6-855a-8c8036865c35",
+      "name": "Update to Processing",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "19TPVjs6n2S2IvEH",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "projectId": "p9oefmwb0krw2mr",
+        "table": "mv8bm80fy8m0wmq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "Id",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.previous_rows[0].Id }}"
+            },
+            {
+              "fieldName": "site_url",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_url }}"
+            },
+            {
+              "fieldName": "site_title",
+              "fieldValue": "={{ $('Format metadata for payload').item.json.domain }}"
+            },
+            {
+              "fieldName": "site_content",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_content }}"
+            },
+            {
+              "fieldName": "crawled",
+              "fieldValue": "Completed"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        384,
+        -464
+      ],
+      "id": "bf3dff57-5706-4288-b71d-6ecc0518b578",
+      "name": "Update to Completed",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "19TPVjs6n2S2IvEH",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "firecrawl_crawl",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -736,
+        -176
+      ],
+      "id": "f63bdfa1-cbfe-4bed-9655-f345ff6ff67d",
+      "name": "Webhook",
+      "webhookId": "d98afad6-5049-4e59-8c40-f7812d848f83"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "481ff7c6-a0f9-4e95-9122-be0c847b0029",
+      "name": "Wait Between Pages",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        2352,
+        -176
+      ],
+      "webhookId": "27dcf35c-f34a-4501-8a24-55d5ac35315f",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $('Format metadata for payload').item.json.domain }}",
+          "mode": "id"
+        },
+        "options": {
+          "collectionConfig": "={\n  \"metadata\": {\n    \"title\": \"{{ $('Format metadata for payload').item.json.metadata.title }}\",\n    \"text\": \"{{ $('Format metadata for payload').item.json.pageContent }}\",\n    \"url\": \"{{ $('Format metadata for payload').item.json.metadata.url }}\",\n    }\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1552,
+        -192
+      ],
+      "id": "22cef542-51f0-465f-b2e0-80a43bd32f26",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        144
+      ],
+      "id": "e1f8464b-b884-412d-a1fd-197cdd08452f",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3QVkIOnbHJ33glWP",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $('Format metadata for payload').item.json.metadata.url }}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $('Format metadata for payload').item.json.metadata.title }}"
+              },
+              {
+                "name": "status_code",
+                "value": "={{ $('Format metadata for payload').item.json.metadata.status_code }}"
+              },
+              {
+                "name": "description",
+                "value": "={{ $('Format metadata for payload').item.json.metadata.description }}"
+              },
+              {
+                "name": "content_type",
+                "value": "={{ $('Format metadata for payload').item.json.metadata.content_type }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1856,
+        224
+      ],
+      "id": "2cc26d42-2f5b-4b3a-a417-d29cae1c22c8",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        368
+      ],
+      "id": "d7ff08ba-b0e3-4ce9-a5a8-77791963459e",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Take the output from \"Extract Content\" and use the domain that's already there\nreturn items.map(item => {\n  return {\n    json: {\n      pageContent: $('Crawl Website').first().json.data.markdown || $json.formatted || \"\",\n      metadata: {\n        url: $('Crawl Website').first().json.data.metadata.url,\n        title: $('Crawl Website').first().json.data.metadata.title,\n        description: $('Crawl Website').first().json.data.metadata.description,\n        status_code: $('Crawl Website').first().json.data.metadata.statusCode,\n        content_type: $('Crawl Website').first().json.data.metadata.contentType\n      },\n      domain: $('Webhook').first().json.body.data.rows[0].site_title  // Use the domain that was already extracted\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        -320
+      ],
+      "id": "851316d1-0403-447d-866f-1c1d39a1e5ef",
+      "name": "Format metadata for payload"
+    },
+    {
+      "parameters": {
+        "url": "=http://192.168.68.9:6333/collections/{{ $json.domain }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1344,
+        -320
+      ],
+      "id": "03fc7073-45e1-46ef-823c-6f71969aca47",
+      "name": "Check Qdrant Collection",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q187f5MyoiadNQrH",
+          "name": "Qdrant Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46c0183c-97a5-4a56-852f-7d478ec2b281",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        -320
+      ],
+      "id": "c9d0498d-b81f-43a4-85f3-c05aaec3ce31",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.data[0].markdown }}",
+        "name": "={{ $('Webhook').item.json.body.data.rows[0].site_title }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -320
+      ],
+      "id": "b2a06f5c-401e-4cfe-8389-c6afe71ca263",
+      "name": "Generate File From Markdown",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://192.168.68.9:6333/collections/{{ $('Format metadata for payload').item.json.domain }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"vectors\": {\n    \"size\": 768,\n    \"distance\": \"Cosine\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1424,
+        0
+      ],
+      "id": "c16e3e16-862a-44fc-99a2-231ccecacbdf",
+      "name": "Create Qdrant collection",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q187f5MyoiadNQrH",
+          "name": "Qdrant Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://firecrawl.themonizes.com/v2/crawl",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"url\": \"{{ $('Webhook').item.json.body.data.rows[0].site_url }}\",\n    \"sitemap\": \"include\",\n    \"crawlEntireDomain\": false,\n    \"limit\": 1000000,\n    \"maxDiscoveryDepth\": 100000,\n    \"scrapeOptions\": {\n        \"onlyMainContent\": false,\n        \"maxAge\": 172800000,\n        \"parsers\": [\n            \"pdf\"\n        ],\n        \"formats\": [\n            \"markdown\"\n        ]\n      }\n}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "f3f0d6bd-d2a2-4302-9424-dde36bb0baa8",
+      "name": "Crawl Website",
+      "retryOnFail": true,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "url": "=https://firecrawl.themonizes.com/v2/crawl/{{ $('Crawl Website').item.json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        336,
+        -176
+      ],
+      "id": "5b06f744-734a-4c22-84e9-d318bd24fe98",
+      "name": "Check Job Completion"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d66ebcb-feaf-4c09-be67-6c15eaad7103",
+              "leftValue": "={{ $json.next }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        -176
+      ],
+      "id": "19df9c9e-9dab-4e31-94e7-6425baba6984",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://firecrawl.themonizes.com/v2/crawl/",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"url\": \"{{ $json.next }}\",\n    \"sitemap\": \"include\",\n    \"crawlEntireDomain\": false,\n    \"limit\": 1000000,\n    \"maxDiscoveryDepth\": 100000,\n    \"scrapeOptions\": {\n        \"onlyMainContent\": false,\n        \"maxAge\": 172800000,\n        \"parsers\": [\n            \"pdf\"\n        ],\n        \"formats\": [\n            \"markdown\"\n        ]\n      }\n}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        -192
+      ],
+      "id": "7eeed0c5-a61a-45fc-8c1d-81e35cab54a9",
+      "name": "Crawl Next URL",
+      "retryOnFail": true,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -192
+      ],
+      "id": "7b642e87-8cf4-498b-a3a5-fe487db0fcc6",
+      "name": "Wait1",
+      "webhookId": "1c50c55c-40d7-43f7-b60c-919817849bbc"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-19T17:56:33.796Z",
+      "updatedAt": "2025-10-19T17:56:33.796Z",
+      "role": "workflow:owner",
+      "workflowId": "tfnosLUC0idIQgII",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-19T18:31:36.000Z",
+  "versionId": "a2e64065-0daa-449b-8da3-c94baeedb443"
+}
