@@ -1,0 +1,458 @@
+{
+  "active": false,
+  "connections": {
+    "When you want to start": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1. List Files from Source": {
+      "main": [
+        []
+      ]
+    },
+    "2b. Download Regular File": {
+      "main": [
+        [
+          {
+            "node": "3b. Upload Regular File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is it a Google Doc?": {
+      "main": [
+        [
+          {
+            "node": "2a. Share File with Destination",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "2b. Download Regular File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Is it a Google Doc?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3b. Download Regular File": {
+      "main": [
+        [
+          {
+            "node": "4b. Upload Regular File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2a. Share File with Destination": {
+      "main": [
+        [
+          {
+            "node": "2a. Copy Editable Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1. List Files from Source1": {
+      "main": [
+        [
+          {
+            "node": "Is it a Google Doc?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is it a Google Doc?1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "3b. Download Regular File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-09T21:15:19.146Z",
+  "id": "Dy8YCB3ggYbMoYpV",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "GDrive transfer Gemini",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9500a301-d9bf-4936-a1d7-2288332249af",
+      "name": "When you want to start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search"
+      },
+      "id": "92d39f82-f993-4be2-bee8-98881bb651e5",
+      "name": "1. List Files from Source",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        -256
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "28c73336-f1b1-4e70-9e35-f8e2230de2e6",
+      "name": "2b. Download Regular File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        64
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7",
+          "mode": "list",
+          "cachedResultName": "Data Migration",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7"
+        },
+        "options": {}
+      },
+      "id": "b243c4cf-0b8c-4670-90f3-63a922020596",
+      "name": "3b. Upload Regular File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        336,
+        64
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YjlqMLFJ2ImPRZ6Y",
+          "name": "Google Drive 1st fairfield"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.mimeType }}",
+              "operation": "contains",
+              "value2": "google-apps"
+            }
+          ]
+        }
+      },
+      "id": "45130f6f-901c-45ef-81da-148376f63672",
+      "name": "Is it a Google Doc?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Is it a Google Doc?').item.json.id }}",
+          "mode": "id"
+        },
+        "name": "={{ $('Search files and folders').item.json.name }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7",
+          "mode": "list",
+          "cachedResultName": "Data Migration",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7"
+        },
+        "options": {}
+      },
+      "id": "261d211e-34f2-498b-8535-33d69af62199",
+      "name": "2a. Copy Editable Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        512,
+        -160
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YjlqMLFJ2ImPRZ6Y",
+          "name": "Google Drive 1st fairfield"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1t05IPFeBK2goM1wl_6sHtB4wdePDctE2",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "kind",
+            "mimeType",
+            "name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -384,
+        -64
+      ],
+      "id": "ac3f49a0-80ff-458b-afe2-39bcd5e4fb7c",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "1ecec2ca-3010-4e4e-b8bf-cefc5400cbee",
+      "name": "3b. Download Regular File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        288,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "8a41b7aa-83a8-40fd-bb5b-dea791a1a68e",
+      "name": "4b. Upload Regular File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        512,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "b40d6547-b746-48c0-9d3a-f0cba830637d",
+      "name": "3a. Copy Editable Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        288,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "user",
+            "emailAddress": "info@1stfairfield.com"
+          }
+        },
+        "options": {
+          "transferOwnership": false
+        }
+      },
+      "id": "326eac00-64fb-4c29-b874-3a68b9e6397e",
+      "name": "2a. Share File with Destination",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        176,
+        -176
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search"
+      },
+      "id": "9ac0dd2a-500e-4067-b309-831d7c4d874d",
+      "name": "1. List Files from Source1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        -512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.mimeType }}",
+              "operation": "contains",
+              "value2": "google-apps"
+            }
+          ]
+        }
+      },
+      "id": "496215da-bab3-4eee-bbbe-db50bace8469",
+      "name": "Is it a Google Doc?1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -512
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-09T21:15:19.151Z",
+      "updatedAt": "2025-09-09T21:15:19.151Z",
+      "role": "workflow:owner",
+      "workflowId": "Dy8YCB3ggYbMoYpV",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:10:35.000Z",
+  "versionId": "ef906406-7c57-44cf-bbe6-bc614518c065"
+}
