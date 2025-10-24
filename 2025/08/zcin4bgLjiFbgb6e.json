@@ -1,0 +1,351 @@
+{
+  "active": false,
+  "connections": {
+    "IMAP Email Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Set Metadata (Email)": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless (Email)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless (Email)": {
+      "main": [
+        [
+          {
+            "node": "Wait for OCR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for OCR": {
+      "main": [
+        [
+          {
+            "node": "Get OCR Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get OCR Content": {
+      "main": [
+        [
+          {
+            "node": "Prepare Gemini Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Gemini Payload": {
+      "main": [
+        [
+          {
+            "node": "Gemini Summarize",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Summarize": {
+      "main": [
+        [
+          {
+            "node": "Insert to RAG DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-31T21:14:16.839Z",
+  "id": "zcin4bgLjiFbgb6e",
+  "isArchived": true,
+  "meta": null,
+  "name": "Copilot document processing",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        128
+      ],
+      "id": "3a1bc76d-1ec7-4e67-a248-63eb54b7a746"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "IMAP Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -224
+      ],
+      "id": "55c715ff-7de9-404b-bd5b-955012021849",
+      "credentials": {
+        "imap": {
+          "id": "ck1y4ytmPHSeilm9",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fileName",
+              "value": "={{$json.subject}}_{{$json.fileName}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Metadata (Email)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "f632d6f3-2e23-4766-9fc5-b5b6dc16baa5"
+    },
+    {
+      "parameters": {
+        "url": "https://paperless.themonizes.com/api/documents/?format=json",
+        "options": {},
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Token 22051845d008ccaa308de6d9f6f947ded185ba51"
+            }
+          ]
+        }
+      },
+      "name": "Upload to Paperless (Email)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -80
+      ],
+      "id": "783a3a96-3859-4b57-91b4-ab94376da973"
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "name": "Wait for OCR",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -64
+      ],
+      "id": "beeadb25-2822-46fe-b367-5afa586fa606",
+      "webhookId": "40b823b2-128a-4939-a774-a6515b8a2ea8"
+    },
+    {
+      "parameters": {
+        "url": "=https://paperless.themonizes.com/api/documents/{{$node[\"Upload to Paperless (Email)\"].json.id}}/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "paperlessNgxApi",
+        "options": {}
+      },
+      "name": "Get OCR Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        624,
+        -80
+      ],
+      "id": "7fd4750e-bd12-4592-8312-75cd34b1af90",
+      "credentials": {
+        "paperlessNgxApi": {
+          "id": "awPsfitl5fYoPmSG",
+          "name": "Paperless account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return [\n  {\n    json: {\n      contents: [\n        {\n          parts: [\n            {\n              text: `Summarize the document titled '${$json.fileName}'. Content: ${$node[\"Get OCR Content\"].json.content}`\n            }\n          ]\n        }\n      ]\n    }\n  }\n];"
+      },
+      "name": "Prepare Gemini Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        816,
+        -80
+      ],
+      "id": "594ae445-f273-4c64-8aa1-9f52d6e2001c"
+    },
+    {
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=YOUR_GEMINI_API_KEY",
+        "options": {}
+      },
+      "name": "Gemini Summarize",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1024,
+        -80
+      ],
+      "id": "0c99ce7f-75ce-41d6-af9d-6975df1d7e1e"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "name": "Insert to RAG DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        -80
+      ],
+      "id": "d259564a-72ed-40eb-9a73-f486df8b73ba"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\n$input.item.json.myNewField = 1;\n\nreturn $input.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        64
+      ],
+      "id": "ef8111b8-803b-4636-b666-cc5c85589fef",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+          "mode": "url"
+        },
+        "event": "watchFolderUpdated"
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -80
+      ],
+      "id": "a633bad5-15a2-4120-ba0f-d50cff9970c1",
+      "name": "Google Drive Trigger",
+      "retryOnFail": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "name": "={{ $json.name }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        144
+      ],
+      "id": "db48a6b2-c0b2-4824-8782-7a8f13d97dbe",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-08-31T21:14:16.842Z",
+      "updatedAt": "2025-08-31T21:14:16.842Z",
+      "role": "workflow:owner",
+      "workflowId": "zcin4bgLjiFbgb6e",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:11:00.000Z",
+  "versionId": "6522e2f8-979e-4d9f-938a-54b5d4ca12fd"
+}
