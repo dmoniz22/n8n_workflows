@@ -1,0 +1,124 @@
+{
+  "active": false,
+  "connections": {
+    "List Files (Account A)": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Upload File (Account B)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-09T21:42:51.207Z",
+  "id": "fzKuSbx649f6BSMF",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "GDrive Transfer Copilot",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "options": {}
+      },
+      "id": "c81a9605-5a93-4a49-b52c-2ca0d1b4aaad",
+      "name": "List Files (Account A)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -112
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": "={{ $json.id }}",
+        "options": {}
+      },
+      "id": "d6c2c6be-2011-424a-b54c-fd114b8ac18c",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -112
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "binaryData": true,
+        "name": "={{ $json.name }}",
+        "parents": [
+          "1t4w_tAHWMwJ7F5W9FgySj2U7rIMIjJW7"
+        ],
+        "options": {}
+      },
+      "id": "4b4b7019-e8d5-4f4a-a813-90aca600f243",
+      "name": "Upload File (Account B)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -112
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YjlqMLFJ2ImPRZ6Y",
+          "name": "Google Drive 1st fairfield"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-09T21:42:51.213Z",
+      "updatedAt": "2025-09-09T21:42:51.213Z",
+      "role": "workflow:owner",
+      "workflowId": "fzKuSbx649f6BSMF",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:10:37.000Z",
+  "versionId": "8808c84a-13ed-4ce8-9b34-cf0ce5e3d89e"
+}
