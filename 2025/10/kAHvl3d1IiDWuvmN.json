@@ -1,0 +1,64 @@
+{
+  "active": false,
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-24T19:06:42.853Z",
+  "id": "kAHvl3d1IiDWuvmN",
+  "isArchived": true,
+  "meta": null,
+  "name": "My Sub-Workflow 1",
+  "nodes": [
+    {
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        260,
+        340
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "b5942df6-0160-4ef7-965d-57583acdc8aa",
+      "name": "Replace me with your logic",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        520,
+        340
+      ],
+      "parameters": {}
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-24T19:06:42.856Z",
+      "updatedAt": "2025-10-24T19:06:42.856Z",
+      "role": "workflow:owner",
+      "workflowId": "kAHvl3d1IiDWuvmN",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-24T19:08:39.000Z",
+  "versionId": "b8d71ae8-983d-41f5-8550-15a88cc99c6d"
+}
