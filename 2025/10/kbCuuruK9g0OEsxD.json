@@ -1,0 +1,377 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Crawl",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crawl": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Crawl Dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Crawl Dataset": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        []
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T20:05:29.711Z",
+  "id": "kbCuuruK9g0OEsxD",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Firecrawl Self-host",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        960
+      ],
+      "id": "87197324-4e25-4a2d-bf36-4c630815c65f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://firecrawl.themonizes.com/v2/scrape",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"url\": \"https://scouts.ca\",\n    \"sitemap\": \"include\",\n    \"crawlEntireDomain\": true,\n    \"scrapeOptions\": {\n        \"onlyMainContent\": false,\n        \"maxAge\": 2592000000,\n        \"formats\": [\n            \"markdown\",\n            \"links\",\n            {\n                \"type\": \"json\",\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"required\": [],\n                    \"properties\": {\n                        \"company_name\": {\n                            \"type\": \"string\"\n                          },\n                        \"company_description\": {\n                            \"type\": \"string\"\n                        }\n                    }\n                }\n            }\n        ]\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        96
+      ],
+      "id": "8fdea748-c78e-4d60-8717-d19829aeb2ac",
+      "name": "Scrape"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://[YOUR SERVER IP]:3002/v2/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"query\": \"Top restaurants in Vancouver, BC\",\n    \"sources\": [\n        \"web\"\n    ],\n    \"categories\": [],\n    \"limit\": 10,\n    \"scrapeOptions\": {\n        \"onlyMainContent\": true,\n        \"maxAge\": 172800000,\n        \"parsers\": [\n            \"pdf\"\n        ],\n        \"formats\": []\n      }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        928
+      ],
+      "id": "0ca84c05-1a1e-4434-b5af-cc6d10719529",
+      "name": "Search"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://[YOUR SERVER IP]:3002/v2/map",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"url\": \"firecrawl.dev\",\n    \"sitemap\": \"include\"\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        512
+      ],
+      "id": "03fcd17b-2b39-495e-8bb5-d55b8418cb73",
+      "name": "Map"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://firecrawl.themonizes.com/v2/crawl",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"url\": \"https://scouts.ca\",\n    \"sitemap\": \"include\",\n    \"crawlEntireDomain\": true,\n    \"scrapeOptions\": {\n        \"onlyMainContent\": false,\n        \"maxAge\": 2592000000,\n        \"parsers\": [\n            \"pdf\"\n        ],\n        \"formats\": [\n            \"markdown\",\n            \"links\",\n            {\n                \"type\": \"json\",\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"required\": [],\n                    \"properties\": {\n                        \"company_name\": {\n                            \"type\": \"string\"\n                          },\n                        \"company_description\": {\n                            \"type\": \"string\"\n                        }\n                    }\n                }\n            }\n        ],\n        \"waitFor\": 5000\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        1344
+      ],
+      "id": "2ecb100c-442c-4ac4-9b01-918537298d82",
+      "name": "Crawl"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://[YOUR SERVER IP]:3002/v1/extract",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"urls\": [\n        \"https://firecrawl.dev/pricing\"\n    ],\n    \"prompt\": \"Extract the pricing plans offered by Firecrawl, including the plan name, price, and features.\",\n    \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"pricing_plans\": {\n                \"type\": \"array\",\n                \"items\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"plan_name\": {\n                            \"type\": \"string\"\n                          },\n                        \"price\": {\n                            \"type\": \"string\"\n                        },\n                        \"features\": {\n                            \"type\": \"array\",\n                            \"items\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    },\n                    \"required\": [\n                        \"plan_name\",\n                        \"price\"\n                    ]\n                }\n            }\n        },\n        \"required\": [\n            \"pricing_plans\"\n        ]\n    },\n    \"enableWebSearch\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        1760
+      ],
+      "id": "61a9af1d-739a-4878-95c8-cad903fce672",
+      "name": "Extract"
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        1344
+      ],
+      "id": "fd03a575-ffad-4c5e-9fc5-35e626b4193e",
+      "name": "Wait",
+      "webhookId": "1f122a94-9076-442d-b94e-2956c65c0017"
+    },
+    {
+      "parameters": {
+        "content": "                Scrape\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGet llm-ready data from websites. Markdown, JSON, etc.",
+        "height": 332,
+        "width": 316,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "895aa0cd-b915-40e3-9100-a69e6b4c7bd8",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "                  Map\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSearch the web and get full content from results.",
+        "height": 332,
+        "width": 1052,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "df71dffc-ce71-4dc0-ae4f-5ab930e9300d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "               Scrape\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSearch the web and get full content from results.",
+        "height": 332,
+        "width": 316,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        832
+      ],
+      "typeVersion": 1,
+      "id": "6bcf5d53-2194-4359-8c4a-27dc651685c7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "                                      Crawl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSearch the web and get full content from results.",
+        "height": 332,
+        "width": 492,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        1248
+      ],
+      "typeVersion": 1,
+      "id": "8002be3d-516b-491f-a5b6-9a8849bc04ce",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "=http://firecrawl.themonizes.com/v2/crawl/{{ $('Crawl').item.json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        528,
+        1344
+      ],
+      "id": "ad2d66b2-708d-4751-958a-2a2983b4b12b",
+      "name": "Get Crawl Dataset"
+    },
+    {
+      "parameters": {
+        "content": "               Scrape\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGet structured data from websites with AI. *Requires OpenAI API Key.",
+        "height": 332,
+        "width": 316,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1664
+      ],
+      "typeVersion": 1,
+      "id": "b59ffe46-46b1-43ba-aa06-8a1d1e5c4008",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        928,
+        1056
+      ],
+      "id": "aff8bd45-79f4-40df-8967-008edc2e81a8",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.markdown }}",
+        "name": "={{ $('Get Crawl Dataset').item.json.data[0].metadata.title }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1072,
+        1344
+      ],
+      "id": "5c4ed360-1431-4a41-8bd9-998440057733",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        832,
+        1344
+      ],
+      "id": "2340dba6-2d18-4da1-b5c3-116d8e94fdbc",
+      "name": "Split Out"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T20:05:29.718Z",
+      "updatedAt": "2025-10-06T20:05:29.718Z",
+      "role": "workflow:owner",
+      "workflowId": "kbCuuruK9g0OEsxD",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-10-06T20:04:09.100Z",
+      "updatedAt": "2025-10-06T20:04:09.100Z",
+      "id": "xwIyGsuHhGnjt4Ul",
+      "name": "Youtube"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-16T23:01:19.000Z",
+  "versionId": "8c588041-f1bb-4bb7-8bc5-22216e502e48"
+}
