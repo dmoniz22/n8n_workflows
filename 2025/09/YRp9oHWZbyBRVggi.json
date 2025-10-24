@@ -1,0 +1,734 @@
+{
+  "active": false,
+  "connections": {
+    "Check Content Type": {
+      "main": [
+        [
+          {
+            "node": "Parse HTML (or Crawl4AI)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse PDF (Unstructured)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse HTML (or Crawl4AI)": {
+      "main": [
+        [
+          {
+            "node": "Extract Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse PDF (Unstructured)": {
+      "main": [
+        [
+          {
+            "node": "Normalize PDF Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize PDF Output": {
+      "main": [
+        [
+          {
+            "node": "Semantic Chunking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Semantic Chunking": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embed (Ollama)": {
+      "main": [
+        [
+          {
+            "node": "Normalize Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Embedding": {
+      "main": [
+        [
+          {
+            "node": "Upsert to Qdrant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert to Qdrant": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Init Crawler": {
+      "main": [
+        []
+      ]
+    },
+    "Get Next URL": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "crawl4ai",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Links": {
+      "main": [
+        [
+          {
+            "node": "Insert new links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "crawl4ai": {
+      "main": [
+        [
+          {
+            "node": "Check Content Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query2": {
+      "main": [
+        []
+      ]
+    },
+    "Init Crawler1": {
+      "main": [
+        [
+          {
+            "node": "Cycle URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cycle URL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert new links": {
+      "main": [
+        [
+          {
+            "node": "Semantic Chunking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-26T18:19:44.301Z",
+  "id": "YRp9oHWZbyBRVggi",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "RAG Ingestion Pipeline (HTML + PDF)",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.headers['content-type']}}",
+              "operation": "contains",
+              "value2": "pdf"
+            }
+          ]
+        }
+      },
+      "id": "f3163780-f7fa-462c-b5f8-b3b0d4d24ec1",
+      "name": "Check Content Type",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "862a2e5f-50a7-49b0-898c-3a7c2522a61e",
+      "name": "Parse HTML (or Crawl4AI)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/general/v0/general",
+        "options": {}
+      },
+      "id": "98559189-671b-4787-a10e-a8926532f949",
+      "name": "Parse PDF (Unstructured)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javascript"
+      },
+      "id": "b0c64e3f-46a5-4bff-861c-ee5626136b18",
+      "name": "Normalize PDF Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        432,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "e2a334f3-631a-428a-b270-321f3360057c",
+      "name": "Semantic Chunking",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        848,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/embeddings",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "5b3badac-7cda-43af-9c2a-bbf9795d7256",
+      "name": "Embed (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "24f0167e-0539-4e48-8234-623c3a030f81",
+      "name": "Normalize Embedding",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1232,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:6333/collections/docs/points?wait=true",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "56ccc963-edba-4044-96bb-1045b0675f3e",
+      "name": "Upsert to Qdrant",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        -336
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        944,
+        -352
+      ],
+      "id": "263c7d87-9ca0-4c29-9221-0e16693c15d8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\n\n// Initialize if empty\nif (!data.queue) {\n  data.queue = [];\n}\n\nlet nextUrl = null;\nif (data.queue.length > 0) {\n  nextUrl = data.queue.shift();\n}\n\nreturn [{ json: { nextUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1776,
+        -464
+      ],
+      "id": "8bda3b2f-25d5-4c0e-9b24-9555df6379a3",
+      "name": "Get Next URL"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\n\nif (!data.queue) {\n  data.queue = ['https://scouts.ca'];\n}\n\n// Pop the next URL\nconst nextUrl = data.queue.shift();\n\nreturn [{ json: { nextUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2000,
+        -464
+      ],
+      "id": "0a592262-6f5e-4022-b4ad-3ab511ae4fbb",
+      "name": "Init Crawler"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cheerio = require('cheerio');\nconst data = this.getWorkflowStaticData('global');\nconst $ = cheerio.load($json.text);\nconst base = new URL($json.url);\n\n$('a[href]').each((_, el) => {\n  try {\n    const href = $(el).attr('href');\n    if (!href) return;\n    const abs = new URL(href, base).href;\n    if (abs.startsWith(base.origin) && !data.visitedUrls.includes(abs)) {\n      if (!data.urlsToVisit.includes(abs)) {\n        data.urlsToVisit.push(abs);\n      }\n    }\n  } catch (e) {}\n});\n\nreturn [{ json: $json }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -32
+      ],
+      "id": "e1a768ab-e4c8-43a7-8a16-62f704422a46",
+      "name": "Extract Links"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c36f67b3-a1d1-4a83-ba55-2d018d843f1b",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -992,
+        32
+      ],
+      "id": "3b181191-7df2-475a-aacd-d18d3651ad48",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "no more urls"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "b8f169a9-7b5d-4a55-a641-c8c7bc222c41",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1648,
+        320
+      ],
+      "id": "84bd653a-51c2-4869-82b7-7d54507c2b5e",
+      "name": "Wait",
+      "webhookId": "aaab6331-ea12-4a05-9bb5-fb1573ee5865"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "scouts_canada",
+          "mode": "list",
+          "cachedResultName": "scouts_canada"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        16
+      ],
+      "id": "b0d7a082-b387-49b5-9a0a-661616c30742",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "9e32803e-1bb8-437a-87bc-1597c87d37f3",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3QVkIOnbHJ33glWP",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        208
+      ],
+      "id": "589c3a61-c2fe-483a-86d9-ba6714839b19",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 75,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        368
+      ],
+      "id": "d1b74c39-42ec-4baf-81ad-f8ac3d2010f8",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.68.8:8081/crawl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -688,
+        16
+      ],
+      "id": "f995831a-c19e-4071-a58f-0c406fba5813",
+      "name": "crawl4ai"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO crawl_queue (url, status)\nSELECT unnest(::text[]), 'processing'\nON CONFLICT (url) DO NOTHING;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        -224
+      ],
+      "id": "69d6bbf1-b8af-4c6a-aa26-0d336b19d64d",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO crawl_queue (url, status)\nVALUES ('https://scouts.ca', 'pending')\nON CONFLICT (url) DO UPDATE SET status = 'pending';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1472,
+        32
+      ],
+      "id": "fea52952-90a8-4eb3-8641-51d0f52c4c84",
+      "name": "Init Crawler1",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "crawl_queue",
+          "mode": "list",
+          "cachedResultName": "crawl_queue"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "status",
+              "value": "pending"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "inserted_at"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1216,
+        32
+      ],
+      "id": "b9bb266b-6ad9-4ce6-93aa-d2cdc4b9bb4a",
+      "name": "Cycle URL",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO crawl_queue (url, status)\nSELECT unnest($1::text[]), 'pending'\nON CONFLICT (url) DO NOTHING;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        -32
+      ],
+      "id": "15272901-9593-43e5-9a9e-bd8d7abef4b2",
+      "name": "Insert new links",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE crawl_queue\nSET status = 'done'\nWHERE url = $1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1488,
+        16
+      ],
+      "id": "54bc13ec-a837-4629-beda-3d2f6738a404",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-26T18:19:44.306Z",
+      "updatedAt": "2025-09-26T18:19:44.306Z",
+      "role": "workflow:owner",
+      "workflowId": "YRp9oHWZbyBRVggi",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-27T01:57:54.000Z",
+  "versionId": "788cdaa4-5898-4ada-a55a-be30a3165a5e"
+}
