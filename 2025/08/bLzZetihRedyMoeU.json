@@ -1,0 +1,379 @@
+{
+  "active": false,
+  "connections": {
+    "On New GDrive File": {
+      "main": [
+        [
+          {
+            "node": "Google Drive: Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive: Download File": {
+      "main": [
+        [
+          {
+            "node": "Set (from GDrive)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set (from GDrive)": {
+      "main": [
+        [
+          {
+            "node": "Detect File Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Image?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Gemini Vision: Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paperless-ngx: Upload": {
+      "main": [
+        [
+          {
+            "node": "Wait for OCR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches (Chunks)": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Summarize Chunk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Summarize Chunk": {
+      "main": [
+        [
+          {
+            "node": "Merge Chunk Summaries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Vision: Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "MindsDB: Insert Structured RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-31T21:06:55.434Z",
+  "id": "bLzZetihRedyMoeU",
+  "isArchived": true,
+  "meta": null,
+  "name": "qwen document processing",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        -48
+      ],
+      "id": "32c1caaf-41ed-4a2d-af05-f17a0e218681"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        }
+      },
+      "name": "On New GDrive File",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        -208
+      ],
+      "id": "b1b93a8e-8b2e-457a-a117-adca86d09691"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "file"
+      },
+      "name": "Google Drive: Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        -208
+      ],
+      "id": "f060f4ef-069b-4af2-bd39-75e7a3c7b9d9"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fileName",
+              "value": "={{ $json.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set (from GDrive)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -208
+      ],
+      "id": "3648ce60-14ad-4d16-9e14-4810e28cfdd2"
+    },
+    {
+      "parameters": {},
+      "name": "Check Duplicate (Fingerprint)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        -48
+      ],
+      "id": "a65f06c9-ddbf-4a41-8680-091bbad68dd0"
+    },
+    {
+      "parameters": {},
+      "name": "Extract Text (PDF/DOCX)",
+      "type": "n8n-nodes-base.textExtract",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -128
+      ],
+      "id": "78d639c8-1f7f-4269-907d-d0c3e615644e"
+    },
+    {
+      "parameters": {},
+      "name": "Extract Image Data",
+      "type": "n8n-nodes-base.binaryToText",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        112
+      ],
+      "id": "23293ea6-8610-4c31-a2b3-d281a4ad8def"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "contentType",
+              "value": "=IF($binary.data.contentType.includes('image/'), 'image', IF($binary.data.contentType.includes('pdf'), 'pdf', 'text'))"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Detect File Type",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -208
+      ],
+      "id": "056d916d-93b6-47df-9537-d30db7605a0b"
+    },
+    {
+      "parameters": {},
+      "name": "Is Image?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -48
+      ],
+      "id": "cf298676-0a32-4714-97d6-72f78250e4b9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://YOUR_PAPERLESS_IP:8000/api/documents/post_document/",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "name": "Paperless-ngx: Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        80,
+        -48
+      ],
+      "id": "67ed2a3c-710d-47f0-951e-240682822e77"
+    },
+    {
+      "parameters": {
+        "url": "http://YOUR_PAPERLESS_IP:8000/api/documents/{{ $json.id }}/metadata/",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "name": "Wait for OCR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        288,
+        -48
+      ],
+      "id": "258c4384-a397-4b73-b861-69a834883bb9"
+    },
+    {
+      "parameters": {},
+      "name": "Split Text into Chunks",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -48
+      ],
+      "id": "bc6a36f0-9df4-4c48-b0ef-fc4faa381c89"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Split In Batches (Chunks)",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -48
+      ],
+      "id": "df4cbec1-0541-41f3-83f2-cd3929e0929c"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "options": {}
+      },
+      "name": "Gemini: Summarize Chunk",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        880,
+        -48
+      ],
+      "id": "b4d88aa4-fb79-4c22-9979-7f4f227f7073"
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "options": {}
+      },
+      "name": "Merge Chunk Summaries",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        -48
+      ],
+      "id": "2f016d0d-d635-4d9a-be55-c9341ee4c882"
+    },
+    {
+      "parameters": {},
+      "name": "Function: Final Summary Merge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -48
+      ],
+      "id": "7d4eb976-c83e-432d-94c5-9881358bd3e1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-vision-latest:generateContent",
+        "options": {}
+      },
+      "name": "Gemini Vision: Analyze Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        112
+      ],
+      "id": "e2065e76-da5f-4970-a65e-578e9ff197aa"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mindsdb:47334/api/sql",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "name": "MindsDB: Insert Structured RAG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1488,
+        -48
+      ],
+      "id": "d565d521-3312-441d-85d4-68ec63f056e3"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-08-31T21:06:55.438Z",
+      "updatedAt": "2025-08-31T21:06:55.438Z",
+      "role": "workflow:owner",
+      "workflowId": "bLzZetihRedyMoeU",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:11:03.000Z",
+  "versionId": "726dba5e-fffa-44e8-ad59-351d765b3c9a"
+}
