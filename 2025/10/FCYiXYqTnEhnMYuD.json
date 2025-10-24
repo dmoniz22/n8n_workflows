@@ -1,0 +1,266 @@
+{
+  "active": false,
+  "connections": {
+    "Convert To File": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Upload File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On Click Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Command Get All Cridentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Command Get All Cridentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON Formatting Data": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Cridentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Cridentials": {
+      "main": [
+        [
+          {
+            "node": "Convert To File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command Get All Cridentials": {
+      "main": [
+        [
+          {
+            "node": "JSON Formatting Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-24T18:49:42.692Z",
+  "id": "FCYiXYqTnEhnMYuD",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "AIAutomationPro Backup Credentials To Google Drive",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ef1aace7-adf3-4d11-8875-6fcdd1ca9f8d",
+      "name": "On Click Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -640,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "npx n8n export:credentials --all --decrypted"
+      },
+      "id": "db713ff4-41d0-4736-9d96-9b1185bb624a",
+      "name": "Execute Command Get All Cridentials",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        -176,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to beautify JSON\nfunction beautifyJson(jsonString) {\n  try {\n    // Parse the JSON string\n    const jsonObject = JSON.parse(jsonString);\n\n    // Format the JSON with indentation\n    return jsonObject; // Return the parsed object directly\n  } catch (error) {\n    // Return the error message if JSON is invalid\n    return `Invalid JSON: ${error.message}`;\n  }\n}\n\n// Retrieve the JSON object from the input data\nconst input = $input.all()[0].json;\n\n// Extract the JSON string from the stdout field\nconst jsonString = input.stdout.match(/\\[{.*}\\]/s);\n\n// Check if a valid JSON string is found\nif (!jsonString) {\n  return {\n    json: {\n      error: \"No valid JSON string found in stdout.\"\n    }\n  };\n}\n\n// Beautify the JSON\nconst beautifiedJson = beautifyJson(jsonString[0]);\n\n// Output the beautified JSON, ensuring each entry is in an object with a 'json' key\nconst output = beautifiedJson.map(entry => ({ json: entry }));\n\n// Return the output\nreturn output;\n"
+      },
+      "id": "65522f64-5407-4972-b1ba-8d8affb5b273",
+      "name": "JSON Formatting Data",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        32,
+        128
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "f36058d4-b3ec-472c-a10a-4f8bd3d69c10",
+      "name": "Aggregate Cridentials",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        240,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Export All Credentials From N8n",
+        "height": 292,
+        "width": 911
+      },
+      "id": "7f22dd5a-8b90-4590-8dff-66c5bf877f01",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -272,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "id": "2af02350-3bbf-43c1-b077-5713b081d03d",
+      "name": "Convert To File",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        432,
+        128
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "## Google Drive Folder",
+        "height": 292,
+        "width": 311
+      },
+      "id": "67d52094-a473-433d-8c90-f421cdb5995f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        752,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "=n8n_backup_credentials.json",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive",
+          "cachedResultName": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1ELK4LdfdxYTW0bg_k6G-Y8fyI3niddun",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "ddeabcd1-2ac6-4ddd-a84a-9b5eee9b7ea9",
+      "name": "Google Drive Upload File",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        848,
+        128
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "6907a6a9-a95b-4bff-b559-0da48596e914",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -640,
+        336
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        368
+      ],
+      "id": "50a24171-8226-41f1-929f-db9cb94bcf77",
+      "name": "Get many workflows",
+      "credentials": {
+        "n8nApi": {
+          "id": "j9PEXJlqzbnDKOB9",
+          "name": "n8n account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-24T18:49:42.696Z",
+      "updatedAt": "2025-10-24T18:49:42.696Z",
+      "role": "workflow:owner",
+      "workflowId": "FCYiXYqTnEhnMYuD",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-24T18:58:32.000Z",
+  "versionId": "e78aeed7-f0c7-41cc-92f1-0600a6bc06b1"
+}
