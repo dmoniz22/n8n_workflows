@@ -1,0 +1,75 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-10T20:31:25.854Z",
+  "id": "jqApVqF8NcJtfmwd",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 8",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5b7c87f3-3d66-4f69-9f91-d65b3689cbe5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-paperless-ngx.paperlessNgx",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ada02351-c732-4d4a-b358-174cd1fb34f4",
+      "name": "Get documents",
+      "credentials": {
+        "paperlessNgxApi": {
+          "id": "awPsfitl5fYoPmSG",
+          "name": "Paperless account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-10T20:31:25.858Z",
+      "updatedAt": "2025-09-10T20:31:25.858Z",
+      "role": "workflow:owner",
+      "workflowId": "jqApVqF8NcJtfmwd",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:35:03.000Z",
+  "versionId": "2c8f8dd8-cd1a-415e-91ca-e5ee9cf9278b"
+}
