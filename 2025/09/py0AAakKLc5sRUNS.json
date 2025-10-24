@@ -1,0 +1,185 @@
+{
+  "active": false,
+  "connections": {
+    "List Files in 'To-Process' Folder": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Format File for Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless": {
+      "main": [
+        [
+          {
+            "node": "Move Processed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format File for Upload": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-02T22:30:45.924Z",
+  "id": "py0AAakKLc5sRUNS",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -16
+      ],
+      "id": "9455efdf-a7b6-49b8-a19f-9e8801e48ba9"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "limit": 1,
+        "options": {}
+      },
+      "name": "List Files in 'To-Process' Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        -16
+      ],
+      "id": "d5845e41-e5ed-4ea2-89bf-a7d5b661089a",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": "={{$json.id}}",
+        "options": {}
+      },
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -16
+      ],
+      "id": "a90462db-1f03-470b-86c9-1f4eab20637d",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "={{$credentials.PaperlessApi.url}}/api/documents/post_document/",
+        "options": {}
+      },
+      "name": "Upload to Paperless",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -16
+      ],
+      "id": "d1b25577-404f-484a-b2b5-b4641ba60ddf"
+    },
+    {
+      "parameters": {
+        "operation": "move"
+      },
+      "name": "Move Processed File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -16
+      ],
+      "id": "7848f0d2-3209-4ee1-bf1b-588e85d113e9"
+    },
+    {
+      "parameters": {},
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -256
+      ],
+      "id": "4d78924f-ebb1-404c-9cd3-82687060ece9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Format File for Upload",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -16
+      ],
+      "id": "638d911b-0720-4d91-8c1f-b8091ccad080"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-02T22:30:45.930Z",
+      "updatedAt": "2025-09-02T22:30:45.930Z",
+      "role": "workflow:owner",
+      "workflowId": "py0AAakKLc5sRUNS",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:24:13.000Z",
+  "versionId": "d4e3b80c-c14c-4442-b8f1-a7b6c2622be8"
+}
