@@ -1,0 +1,214 @@
+{
+  "active": false,
+  "connections": {
+    "Format & Clean AI Response": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jina AI DeepSearch Request": {
+      "main": [
+        [
+          {
+            "node": "Format & Clean AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Jina AI DeepSearch Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-03T06:32:11.283Z",
+  "id": "mhqk8NiGpHsGtFDY",
+  "isArchived": true,
+  "meta": {
+    "templateId": "3068",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "AI-Powered Research with Jina AI Deep Search",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "\n# **🚀 Developed by Leonard van Hemert**  \n\nThank you for using **FREE: Open Deep Research 2.0**! 🎉  \n\nThis workflow was created to **democratize AI-powered research** and make advanced **automated knowledge discovery** available to **everyone**, without **API restrictions** or **cost barriers**.  \n\nIf you find this useful, feel free to **connect with me on LinkedIn** and stay updated on my latest AI & automation projects!  \n\n🔗 **Follow me on LinkedIn**: [Leonard van Hemert](https://www.linkedin.com/in/leonard-van-hemert/)  \n\nI truly appreciate the support from the **n8n community**, and I can’t wait to see how you use and improve this workflow! 🚀  \n\nHappy researching,  \n**Leonard van Hemert** 💡",
+        "height": 792,
+        "width": 676,
+        "color": 6
+      },
+      "id": "c76a7993-e7b1-426e-bcb4-9a18d9c72b83",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 **FREE: Open Deep Research 2.0**  \nFully automated **AI-powered research workflow** using **Jina AI’s DeepSearch** to generate structured, fact-based reports—**no API key required!**  ",
+        "height": 300,
+        "width": 740
+      },
+      "id": "5620b6b5-1485-43a8-9acd-3368147bd742",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 **How This Workflow Works**  \n\nThis workflow automates **deep research and report generation** using **Jina AI's DeepSearch API**, making **advanced knowledge discovery accessible for free**.  \n\n1️⃣ **User Input → AI Research**  \n- A user **enters a research query** via chat.  \n- The workflow **sends the query** to **Jina AI’s DeepSearch API** for **in-depth analysis**.  \n\n2️⃣ **AI-Powered Insights**  \n- DeepSearch **retrieves** and **analyzes** relevant information.  \n- The response includes **key insights, structured analysis, and sources**.  \n\n3️⃣ **Markdown Formatting & Cleanup**  \n- The response **passes through a Code Node** that extracts, cleans, and **formats** the AI-generated insights into **readable Markdown output**.  \n- URLs are properly formatted, footnotes are structured, and the report is easy to read.  \n\n4️⃣ **Final Output**  \n- The final, **well-structured research report** is ready for use, **fully automated and free of charge!**  ",
+        "height": 440,
+        "width": 740
+      },
+      "id": "dbe1cc91-34b4-4e5b-b404-dd86f47d1ebf",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1136,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://deepsearch.jina.ai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jinaAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"jina-deepsearch-v1\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are an advanced AI researcher that provides precise, well-structured, and insightful reports based on deep analysis. Your responses are factual, concise, and highly relevant.\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"Hi, how can I help you?\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Provide a deep and insightful analysis on: \\\"{{ $json.text }}\\\". Ensure the response is well-structured, fact-based, and directly relevant to the topic, with no unnecessary information.\"\n    }\n  ],\n  \"stream\": true,\n  \"reasoning_effort\": \"low\"\n}",
+        "options": {}
+      },
+      "id": "42fd2f04-7d83-44c9-a41b-48860efbcf79",
+      "name": "Jina AI DeepSearch Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1408,
+        384
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "jinaAiApi": {
+          "id": "f81tsUFRnL98lCOr",
+          "name": "Jina AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function extractAndFormatMarkdown(input) {\n    let extractedContent = [];\n\n    // Extract raw data string from n8n input\n    let rawData = input.first().json.data;\n\n    // Split into individual JSON strings\n    let jsonStrings = rawData.split(\"\\n\\ndata: \").map(s => s.replace(/^data: /, ''));\n\n    let lastContent = \"\";\n    \n    // Reverse loop to find the last \"content\" field\n    for (let i = jsonStrings.length - 1; i >= 0; i--) {\n        try {\n            let parsedChunk = JSON.parse(jsonStrings[i]);\n\n            if (parsedChunk.choices && parsedChunk.choices.length > 0) {\n                for (let j = parsedChunk.choices.length - 1; j >= 0; j--) {\n                    let choice = parsedChunk.choices[j];\n\n                    if (choice.delta && choice.delta.content) {\n                        lastContent = choice.delta.content.trim();\n                        break;\n                    }\n                }\n            }\n\n            if (lastContent) break; // Stop once the last content is found\n        } catch (error) {\n            console.error(\"Failed to parse JSON string:\", jsonStrings[i], error);\n        }\n    }\n\n    // Clean and format Markdown\n    lastContent = lastContent.replace(/\\[\\^(\\d+)\\]: (.*?)\\n/g, \"[$1]: $2\\n\");  // Format footnotes\n    lastContent = lastContent.replace(/\\[\\^(\\d+)\\]/g, \"[^$1]\");  // Inline footnotes\n    lastContent = lastContent.replace(/(https?:\\/\\/[^\\s]+)(?=[^]]*\\])/g, \"<$1>\");  // Format links\n\n    // Return formatted content as an array of objects (n8n expects this format)\n    return [{ text: lastContent.trim() }];\n}\n\n// Execute function and return formatted output\nreturn extractAndFormatMarkdown($input);\n"
+      },
+      "id": "218cbfe2-78de-4b00-875a-51761ac9f5c7",
+      "name": "Format & Clean AI Response",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1632,
+        384
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.text }}",
+        "name": "={{ $('Telegram Trigger').item.json['message'].text}}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1824,
+        384
+      ],
+      "id": "893d5e31-500b-4433-8a04-d615e55c1681",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        384
+      ],
+      "id": "a9daba03-07bc-4b9c-9a80-7dbbcca90300",
+      "name": "Telegram Trigger",
+      "webhookId": "fb231804-85b2-4141-be8e-0bb22907ab8a",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "LfWwMdKcv0LZ7NU9",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Vancouver",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-03T06:32:11.293Z",
+      "updatedAt": "2025-09-03T06:32:11.293Z",
+      "role": "workflow:owner",
+      "workflowId": "mhqk8NiGpHsGtFDY",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-28T18:10:51.000Z",
+  "versionId": "b28f9b32-f43b-4d67-8574-d6ebf74e5036"
+}
