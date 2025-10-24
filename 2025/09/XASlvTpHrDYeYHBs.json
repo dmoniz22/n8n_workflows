@@ -1,0 +1,249 @@
+{
+  "active": false,
+  "connections": {
+    "Compute File Hash": {
+      "main": [
+        [
+          {
+            "node": "Check File in PostgreSQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check File in PostgreSQL": {
+      "main": [
+        [
+          {
+            "node": "IF Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Exists": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert New Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert New Row": {
+      "main": [
+        [
+          {
+            "node": "Chunk Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Row": {
+      "main": [
+        [
+          {
+            "node": "Chunk Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-26T17:43:56.542Z",
+  "id": "XASlvTpHrDYeYHBs",
+  "isArchived": true,
+  "meta": null,
+  "name": "integrate postgres",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "5789052c-4573-4fba-b679-5ab5f4980fd3",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        -32
+      ],
+      "id": "8fba51cc-0996-45f8-ad31-97aca3eb8e18",
+      "webhookId": "5789052c-4573-4fba-b679-5ab5f4980fd3"
+    },
+    {
+      "parameters": {
+        "functionCode": "const crypto = require('crypto');\nconst hash = crypto.createHash('sha256');\nhash.update(items[0].json.fileContent);\nitems[0].json.file_hash = hash.digest('hex');\nreturn items;"
+      },
+      "name": "Compute File Hash",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        -32
+      ],
+      "id": "2cb0099f-29e7-410d-85aa-da2cafe18aa4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM documents WHERE file_hash = '{{ $json.file_hash }}';",
+        "additionalFields": {}
+      },
+      "name": "Check File in PostgreSQL",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        -32
+      ],
+      "id": "609523cd-9a01-4de5-bf8b-e2f76cc8edb6",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.length > 0 }}",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "IF Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -32
+      ],
+      "id": "8c285983-f32a-4e06-9360-afb3689e91d4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM documents WHERE file_hash = '{{ $json.file_hash }}';",
+        "additionalFields": {}
+      },
+      "name": "Delete Old Row",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -128
+      ],
+      "id": "22d549c0-1406-45a5-9e2a-fe19efb1e747",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO documents (file_name, file_hash, source) VALUES ('{{ $json.fileName }}', '{{ $json.file_hash }}', 'upload');",
+        "additionalFields": {}
+      },
+      "name": "Insert New Row",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        80
+      ],
+      "id": "6242c5b9-0e90-4574-826a-6e5cab0e057e",
+      "credentials": {
+        "postgres": {
+          "id": "p6fodehUs728wecT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Example chunking logic\nconst content = items[0].json.fileContent;\nconst chunks = content.match(/.{1,500}/g);\nreturn chunks.map((chunk, i) => ({ json: { chunk_id: i, text: chunk, file_hash: items[0].json.file_hash } }));"
+      },
+      "name": "Chunk Document",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -32
+      ],
+      "id": "7600548b-9e79-4384-9121-fc30c2b168fd"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.openai.com/v1/embeddings",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Generate Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -32
+      ],
+      "id": "35ba44fd-9e31-4491-ab19-e5ba99c3a36a"
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:6333/collections/document_chunks/points",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Insert to Qdrant",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "e0e1e701-1ec3-4d97-b893-618bca51ca10"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-26T17:43:56.547Z",
+      "updatedAt": "2025-09-26T17:43:56.547Z",
+      "role": "workflow:owner",
+      "workflowId": "XASlvTpHrDYeYHBs",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T18:06:06.000Z",
+  "versionId": "68bba974-bb2f-41d8-a210-76e772669206"
+}
