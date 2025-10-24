@@ -1,0 +1,313 @@
+{
+  "active": false,
+  "connections": {
+    "IMAP Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set (from Email)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive: Download File": {
+      "main": [
+        [
+          {
+            "node": "Paperless-ngx: Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paperless-ngx: Upload": {
+      "main": [
+        [
+          {
+            "node": "Get File Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On New GDrive File": {
+      "main": [
+        [
+          {
+            "node": "Set (from GDrive)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set (from Email)": {
+      "main": [
+        [
+          {
+            "node": "Google Drive: Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set (from GDrive)": {
+      "main": [
+        [
+          {
+            "node": "Google Drive: Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Summarize": {
+      "main": [
+        [
+          {
+            "node": "Postgres: Add to RAG DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File Content": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-30T22:13:05.959Z",
+  "id": "oCINBOkoTb6fGZfk",
+  "isArchived": true,
+  "meta": null,
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        160
+      ],
+      "id": "a4e3cfac-52dd-45bd-b7db-37a7f1b70af1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "IMAP Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "345da2cc-886b-4a72-a7dc-4aa30b8b44b0",
+      "credentials": {
+        "imap": {
+          "id": "ck1y4ytmPHSeilm9",
+          "name": "IMAP account"
+        }
+      },
+      "notes": "Watches your email inbox for new messages with attachments."
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "file"
+      },
+      "name": "Google Drive: Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        800,
+        160
+      ],
+      "id": "d525676d-29b5-426b-bc60-af876d283dc2",
+      "notes": "Downloads the binary data for each file found."
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "http://YOUR_PAPERLESS_IP:8000/api/documents/post_document/",
+        "options": {}
+      },
+      "name": "Paperless-ngx: Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        160
+      ],
+      "id": "26e50f1f-376d-461b-b5f1-ea166c5ec4ef",
+      "notes": "Uploads the document to Paperless-ngx.\n\n**SETUP:**\n1. Replace `YOUR_PAPERLESS_IP` with the IP address of your server.\n2. Replace `YOUR_PAPERLESS_API_TOKEN` with a token you generate in the Paperless UI."
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1DsXtEHh5FsWlyLz6lWmLdeYugpF1EsRq",
+          "mode": "url"
+        },
+        "event": "watchFolderUpdated"
+      },
+      "name": "On New GDrive File",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        320
+      ],
+      "id": "ae9ae3a6-a3be-4b33-a066-5c3da26102ec",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      },
+      "notes": "Watches your Google Drive for any new files being added."
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fileName",
+              "value": "={{$json.subject}}_{{$json.attachments[0].fileName}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set (from Email)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        352,
+        0
+      ],
+      "id": "e311fe23-715e-472d-a9da-a3cbf405e281",
+      "notes": "Normalizes the data from the email trigger so the rest of the workflow can use it."
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fileName",
+              "value": "={{$json.name}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set (from GDrive)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        352,
+        320
+      ],
+      "id": "f1632a11-475a-44af-a707-dda5074c873d",
+      "notes": "Normalizes the data from the Google Drive trigger so the rest of the workflow can use it."
+    },
+    {
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=YOUR_GEMINI_API_KEY",
+        "options": {}
+      },
+      "name": "Gemini: Summarize",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1504,
+        160
+      ],
+      "id": "7e1bd1bd-9a0c-4c00-a829-19f6e530a150",
+      "notes": "Sends the extracted document content to Gemini to generate a summary.\n\n**SETUP:**\n1. Replace `YOUR_GEMINI_API_KEY` in the URL with your actual Gemini API key."
+    },
+    {
+      "parameters": {
+        "url": "=http://YOUR_PAPERLESS_IP:8000/api/documents/{{$node[\"Paperless-ngx: Upload\"].json.id}}/",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "name": "Get File Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1264,
+        160
+      ],
+      "id": "7f00b718-57a5-457e-bc71-df003a778b33",
+      "notes": "Waits a moment and then fetches the OCR'd content of the document from Paperless.\n\n**SETUP:**\n1. Replace `YOUR_PAPERLESS_IP` with the IP address of your server."
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "name": "Postgres: Add to RAG DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        160
+      ],
+      "id": "34bab75c-854d-4a6c-a850-2a3cbc3d429b",
+      "notes": "Adds the final document content and summary to your PostgreSQL database for MindsDB to use.\n\n**SETUP:**\nCreate new credentials for this node with the following details from your docker-compose file:\n\n- **Host:** postgres_db\n- **Database:** document_db\n- **User:** mindsdb_user\n- **Password:** a_strong_password_here"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-08-30T22:13:05.962Z",
+      "updatedAt": "2025-08-30T22:13:05.962Z",
+      "role": "workflow:owner",
+      "workflowId": "oCINBOkoTb6fGZfk",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-10T20:19:07.000Z",
+  "versionId": "421bce7b-311b-4c51-abfd-a08926533120"
+}
