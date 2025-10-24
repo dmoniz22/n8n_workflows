@@ -1,0 +1,749 @@
+{
+  "active": true,
+  "connections": {
+    "Loop URLs": {
+      "main": [
+        [
+          {
+            "node": "Update to Completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Scrape Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sitemap": {
+      "main": [
+        [
+          {
+            "node": "Parse Sitemap XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Page": {
+      "main": [
+        [
+          {
+            "node": "Extract Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Content": {
+      "main": [
+        [
+          {
+            "node": "Format metadata for payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Content": {
+      "main": [
+        [
+          {
+            "node": "Format Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Sitemap XML": {
+      "main": [
+        [
+          {
+            "node": "Update to Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Sitemap URLs": {
+      "main": [
+        [
+          {
+            "node": "Loop URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between Pages": {
+      "main": [
+        [
+          {
+            "node": "Loop URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format metadata for payload": {
+      "main": [
+        [
+          {
+            "node": "Check Qdrant Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Qdrant Collection": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Qdrant collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Qdrant collection": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update to Processing": {
+      "main": [
+        [
+          {
+            "node": "Split Sitemap URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-21T03:59:35.369Z",
+  "id": "DILbaau5yJ3sBUNl",
+  "isArchived": false,
+  "meta": {
+    "templateId": "7186",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Web Scraper: Extract Website Content from Sitemaps to Google Drive",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## ✅ Simple Working Scraper\n### Now with Full Sitemap Support\n**Uses direct HTTP requests that we know work**\n\n**Features:**\n- Fetches complete sitemap\n- Processes all pages sequentially\n- Respectful 3-second delays\n- Robust error handling",
+        "height": 300,
+        "width": 400,
+        "color": 2
+      },
+      "id": "86320ce4-511d-4c6d-84c9-5e98de444130",
+      "name": "Working Scraper Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        -208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.data.rows[0].site_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "92a93278-e61b-4860-b0a6-73b2821dacbb",
+      "name": "Get Sitemap",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -80,
+        320
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=data",
+        "options": {}
+      },
+      "id": "3aa79508-fe19-428b-91d8-77c1e7a7e012",
+      "name": "Parse Sitemap XML",
+      "type": "n8n-nodes-base.xml",
+      "position": [
+        128,
+        320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "urlset.url",
+        "options": {}
+      },
+      "id": "f797b739-60eb-478e-b4d8-958dfe51b37a",
+      "name": "Split Sitemap URLs",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        688,
+        320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "cfb6df8a-a753-41c2-9983-22fea4bb0b2e",
+      "name": "Loop URLs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        688,
+        544
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.loc }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "Pragma",
+              "value": "no-cache"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "7ae29bfa-f197-447b-a5de-283db54aedf9",
+      "name": "Scrape Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1088,
+        544
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract content from HTML - handle all response types safely\nconst originalUrl = $('Loop URLs').item.json.loc;\nconst url = originalUrl ? originalUrl.trim() : \"\";\nlet html = '';\nlet statusCode = 'Unknown';\n\n// Handle different response formats\nif (typeof $json === 'string') {\n  html = $json;\n  statusCode = 200;\n} else if ($json && $json.body) {\n  html = $json.body;\n  statusCode = $json.statusCode || 200;\n} else if ($json && typeof $json === 'object') {\n  const possibleHtml = Object.values($json).find(val => \n    typeof val === 'string' && (val.includes('<html') || val.includes('<div') || val.length > 100)\n  );\n  html = possibleHtml || '';\n  statusCode = $json.statusCode || 'Unknown';\n}\n\nconsole.log('Processing URL:', url);\nconsole.log('Original URL (before trim):', originalUrl);\nconsole.log('Response type:', typeof $json);\nconsole.log('HTML length:', html ? html.length : 0);\nconsole.log('Status code:', statusCode);\n\nfunction extractTitle(html) {\n  if (!html) return 'No Title';\n  \n  const titlePatterns = [\n    /<title[^>]*>([^<]+)<\\/title>/i,\n    /<meta[^>]*property=[\"']og:title[\"'][^>]*content=[\"']([^\"']+)[\\\"']/i,\n    /<h1[^>]*>([^<]+)<\\/h1>/i\n  ];\n  \n  for (const pattern of titlePatterns) {\n    const match = html.match(pattern);\n    if (match && match[1]) {\n      return match[1].trim().replace(/\\s+/g, ' ');\n    }\n  }\n  \n  return 'Untitled Page';\n}\n\nfunction extractContent(html) {\n  if (!html) return 'No content available';\n  \n  let content = html\n    .replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, '')\n    .replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi, '')\n    .replace(/<!--[\\s\\S]*?-->/g, '')\n    .replace(/<noscript[^>]*>[\\s\\S]*?<\\/noscript>/gi, '');\n  \n  content = content\n    .replace(/<h[1-6][^>]*>([^<]+)<\\/h[1-6]>/gi, '\\n\\n## $1\\n\\n')\n    .replace(/<p[^>]*>([^<]+)<\\/p>/gi, '\\n\\n$1\\n\\n')\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<div[^>]*>([^<]*)<\\/div>/gi, '\\n$1\\n')\n    .replace(/<a[^>]*href=[\"']([^\"']*)[\"'][^>]*>([^<]+)<\\/a>/gi, '$2 [$1]')\n    .replace(/<li[^>]*>([^<]+)<\\/li>/gi, '\\n• $1')\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .replace(/\\n\\s+/g, '\\n')\n    .replace(/\\s+\\n/g, '\\n')\n    .replace(/\\n{3,}/g, '\\n\\n')\n    .trim();\n  \n  return content || 'No readable content found';\n}\n\nconst title = extractTitle(html);\nconst content = extractContent(html);\nconst wordCount = content.split(/\\s+/).filter(w => w.length > 0).length;\n\n// Extract domain from URL for Qdrant collection - WITH MAXIMUM ERROR HANDLING\nlet domain = \"default_collection\";\n\nif (url && typeof url === 'string' && url.length > 0) {\n  try {\n    let cleanUrl = url.trim();\n    console.log(\"URL after trimming:\", cleanUrl);\n    \n    // Extract hostname using regex as fallback method\n    let hostname = \"\";\n    \n    // First try to extract using URL constructor\n    try {\n      let fullUrl = cleanUrl;\n      if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {\n        fullUrl = 'https://' + fullUrl;\n      }\n      const urlObj = new URL(fullUrl);\n      hostname = urlObj.hostname;\n    } catch (urlError) {\n      console.error(\"URL constructor failed:\", urlError.message);\n      // Fallback: extract hostname using regex\n      const match = cleanUrl.match(/https?:\\/\\/([^\\/\\?#]+)/i);\n      if (match && match[1]) {\n        hostname = match[1].split(':')[0]; // Remove port if present\n        console.log(\"Extracted hostname using regex:\", hostname);\n      } else {\n        throw new Error(\"Could not extract hostname from URL\");\n      }\n    }\n    \n    console.log(\"Final hostname:\", hostname);\n    \n    // Process hostname to create domain name\n    domain = hostname\n      .replace(/^www\\./i, \"\")         // Remove www prefix (case insensitive)\n      .replace(/[^a-zA-Z0-9_-]/g, \"_\") // Replace non-alphanumeric with underscore\n      .replace(/^_+|_+$/g, \"\")         // Remove leading/trailing underscores\n      .toLowerCase();                  // Convert to lowercase\n    \n    console.log(\"Processed domain:\", domain);\n    \n    // Validate domain name\n    if (!domain || domain.length === 0) {\n      domain = \"default_collection\";\n      console.log(\"Domain was empty, using default\");\n    } else if (!/^[a-zA-Z]/.test(domain)) {\n      domain = \"collection_\" + domain;\n      console.log(\"Domain didn't start with letter, prefixed with 'collection_'\");\n    }\n    \n    console.log(\"Final domain result:\", domain);\n    \n  } catch (e) {\n    console.error(`Domain extraction failed: ${e.message} for URL: ${url}`);\n    console.error(\"Full error:\", e);\n    domain = \"default_collection\";\n  }\n} else {\n  console.warn(\"URL is not valid for domain extraction:\", url, typeof url);\n}\n\nconsole.log(\"Final domain result:\", domain);\n\n// Check for framework indicators\nconst isDivi = html.toLowerCase().includes('divi') || html.includes('et_pb_');\nconst isWordPress = html.toLowerCase().includes('wp-') || html.includes('wp_');\nconst hasJavaScript = html.includes('<script');\n\nreturn {\n  url: url,\n  title: title,\n  content: content,\n  wordCount: wordCount,\n  htmlLength: html.length,\n  statusCode: statusCode,\n  isDivi: isDivi,\n  isWordPress: isWordPress,\n  hasJavaScript: hasJavaScript,\n  timestamp: new Date().toISOString(),\n  success: html.length > 0,\n  domain: domain\n};"
+      },
+      "id": "4581c231-86ab-42ae-b57a-a9656a22cf1a",
+      "name": "Extract Content",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1280,
+        544
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format content for Google Drive\nconst data = $json;\n\nif (!data.success) {\n  return {\n    title: 'Scraping Failed',\n    formatted: `# Scraping Failed\\n\\n**URL:** ${data.url}\\n**Error:** No content retrieved\\n**Status Code:** ${data.statusCode}\\n**Timestamp:** ${data.timestamp}\\n\\nThe page may be JavaScript-dependent or blocking automated requests.`\n  };\n}\n\nconst sections = [];\n\n// YAML frontmatter\nsections.push('---');\nsections.push(`title: \"${data.title.replace(/\"/g, '\\\\\"')}\"`); \nsections.push(`url: ${data.url}`);\nsections.push(`scraped_at: ${data.timestamp}`);\nsections.push(`word_count: ${data.wordCount}`);\nsections.push(`html_length: ${data.htmlLength}`);\nsections.push(`status_code: ${data.statusCode}`);\nsections.push(`is_divi: ${data.isDivi}`);\nsections.push(`is_wordpress: ${data.isWordPress}`);\nsections.push(`has_javascript: ${data.hasJavaScript}`);\nsections.push('scraper_type: \"simple_direct_sitemap\"');\nsections.push('---');\nsections.push('');\n\n// Main content\nsections.push(`# ${data.title}`);\nsections.push('');\nsections.push(`**Source URL:** ${data.url}`);\nsections.push(`**Scraped:** ${new Date(data.timestamp).toLocaleString()}`);\nsections.push(`**Word Count:** ${data.wordCount.toLocaleString()}`);\nsections.push(`**HTML Size:** ${data.htmlLength.toLocaleString()} characters`);\nsections.push(`**Status Code:** ${data.statusCode}`);\nsections.push('');\n\nif (data.isDivi) {\n  sections.push('🎨 **Divi Theme Detected** - This WordPress site uses dynamic content loading');\n  sections.push('');\n}\n\nif (data.hasJavaScript && data.wordCount < 100) {\n  sections.push('⚠️ **Limited Content** - This page likely requires JavaScript rendering for full content');\n  sections.push('');\n}\n\nsections.push('---');\nsections.push('');\nsections.push('## Content');\nsections.push('');\n\nif (data.content && data.content !== 'No readable content found') {\n  sections.push(data.content);\n} else {\n  sections.push('*No readable content could be extracted from this page.*');\n  sections.push('');\n  sections.push('**Possible reasons:**');\n  sections.push('- Page content is loaded dynamically with JavaScript');\n  sections.push('- Site has anti-bot protection');\n  sections.push('- Content is behind authentication');\n  sections.push('- Page structure is complex or non-standard');\n}\n\nsections.push('');\nsections.push('---');\nsections.push('');\nsections.push('**Technical Details:**');\nsections.push(`- Framework detected: ${data.isDivi ? 'Divi' : (data.isWordPress ? 'WordPress' : 'Unknown')}`);\nsections.push(`- JavaScript present: ${data.hasJavaScript ? 'Yes' : 'No'}`);\nsections.push(`- Content extraction: ${data.wordCount > 50 ? 'Successful' : 'Limited'}`);\nsections.push('');\nsections.push('*Scraped with n8n Simple Working Scraper (Full Sitemap)*');\n\nreturn {\n  title: data.title,\n  formatted: sections.join('\\n')\n};"
+      },
+      "id": "f48d870e-9566-4b7c-bd8d-f1b3cb310325",
+      "name": "Format Content",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1440,
+        544
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "e62e8040-db5c-4a59-8b31-c589aa2c7d0e",
+      "name": "Wait Between Pages",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        2816,
+        544
+      ],
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $('Format metadata for payload').item.json.domain }}",
+          "mode": "id"
+        },
+        "options": {
+          "collectionConfig": "={\n  \"metadata\": {\n    \"title\": \"{{ $json.metadata.title }}\",\n    \"text\": \"{{ $json.pageContent }}\",\n    \"url\": \"{{ $json.metadata.url }}\",\n    \"scraped_at\": \"{{ $json.metadata.scraped_at }}\",\n    \"word_count\": \"{{ $json.metadata.word_count }}\"\n    }\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        2432,
+        560
+      ],
+      "id": "989dd265-5e80-4523-b666-16f3ad2486dd",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "99CkzxZ39qUOvgHG",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        736
+      ],
+      "id": "5e8119d6-55ac-43c8-91be-f3173e03a3c0",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3QVkIOnbHJ33glWP",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $json.metadata.url }}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $json.metadata.title }}"
+              },
+              {
+                "name": "scraped_at",
+                "value": "={{ $json.metadata.scraped_at }}"
+              },
+              {
+                "name": "word_count",
+                "value": "={{ $json.metadata.word_count }}"
+              },
+              {
+                "name": "status_code",
+                "value": "={{ $json.metadata.status_code }}"
+              },
+              {
+                "name": "html_length",
+                "value": "={{ $json.metadata.html_length }}"
+              },
+              {
+                "name": "is_divi",
+                "value": "={{ $json.metadata.is_divi }}"
+              },
+              {
+                "name": "is_wordpress",
+                "value": "={{ $json.metadata.is_wordpress }}"
+              },
+              {
+                "name": "has_javascript",
+                "value": "={{ $json.metadata.has_javascript }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2560,
+        736
+      ],
+      "id": "1d443eca-37f5-4864-acb4-1d53e95d1743",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2704,
+        880
+      ],
+      "id": "230979b6-b122-47f4-9ccf-ad2dd91e8211",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Take the output from \"Extract Content\" and use the domain that's already there\nreturn items.map(item => {\n  return {\n    json: {\n      pageContent: $json.content || $json.formatted || \"\",\n      metadata: {\n        url: $('Extract Content').first().json.url,\n        title: $('Extract Content').first().json.title ,\n        scraped_at: $('Extract Content').first().json.timestamp,\n        word_count: $('Extract Content').first().json.wordCount,\n        status_code: $('Extract Content').first().json.statusCode,\n        html_length: $('Extract Content').first().json.htmlLength,\n        is_divi: $('Extract Content').first().json.isDivi,\n        is_wordpress: $('Extract Content').first().json.isWordPress,\n        has_javascript: $('Extract Content').first().json.hasJavaScript\n      },\n      domain: $('Extract Content').first().json.domain  // Use the domain that was already extracted\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        544
+      ],
+      "id": "e81291e4-22a9-4e30-8d28-29a4d8442a52",
+      "name": "Format metadata for payload"
+    },
+    {
+      "parameters": {
+        "url": "=http://192.168.68.9:6333/collections/{{ $json.domain }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1808,
+        544
+      ],
+      "id": "913bb172-4a03-4ed0-a10a-48db0841eb9f",
+      "name": "Check Qdrant Collection",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "XL2rdv0qrbndTM7L",
+          "name": "Qdrant account"
+        },
+        "httpHeaderAuth": {
+          "id": "Q187f5MyoiadNQrH",
+          "name": "Qdrant Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46c0183c-97a5-4a56-852f-7d478ec2b281",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2016,
+        544
+      ],
+      "id": "87c0a8ab-0b1f-450c-ad4b-f7e87637c9df",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://192.168.68.9:6333/collections/{{ $('Format metadata for payload').item.json.domain }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"vectors\": {\n    \"size\": 768,\n    \"distance\": \"Cosine\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2224,
+        640
+      ],
+      "id": "c7b561aa-a2a2-40ea-92af-f3029491d561",
+      "name": "Create Qdrant collection",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q187f5MyoiadNQrH",
+          "name": "Qdrant Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webcrawl",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        320
+      ],
+      "id": "2ad0fefe-7fce-4a23-bca1-f879b9352e0f",
+      "name": "Webhook",
+      "webhookId": "9e8316e4-aa2f-43f6-b47c-39157b783691"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "projectId": "p9oefmwb0krw2mr",
+        "table": "mv8bm80fy8m0wmq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "Id",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].Id }}"
+            },
+            {
+              "fieldName": "site_url",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_url }}"
+            },
+            {
+              "fieldName": "site_title",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_title }}"
+            },
+            {
+              "fieldName": "site_content",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_content }}"
+            },
+            {
+              "fieldName": "crawled",
+              "fieldValue": "Processing"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        384,
+        320
+      ],
+      "id": "f94adf0e-e7fa-4516-9c13-511bf4417eca",
+      "name": "Update to Processing",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "19TPVjs6n2S2IvEH",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "projectId": "p9oefmwb0krw2mr",
+        "table": "mv8bm80fy8m0wmq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "Id",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].Id }}"
+            },
+            {
+              "fieldName": "site_url",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_url }}"
+            },
+            {
+              "fieldName": "site_title",
+              "fieldValue": "={{ $('Format metadata for payload').item.json.domain }}"
+            },
+            {
+              "fieldName": "site_content",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.rows[0].site_content }}"
+            },
+            {
+              "fieldName": "crawled",
+              "fieldValue": "Completed"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        960,
+        368
+      ],
+      "id": "501e83e9-5d7c-421b-adda-6474574e8b5e",
+      "name": "Update to Completed",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "19TPVjs6n2S2IvEH",
+          "name": "NocoDB Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {},
+  "shared": [
+    {
+      "createdAt": "2025-09-21T03:59:35.375Z",
+      "updatedAt": "2025-09-21T03:59:35.375Z",
+      "role": "workflow:owner",
+      "workflowId": "DILbaau5yJ3sBUNl",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-06T01:04:56.000Z",
+  "versionId": "9d824d2c-a4dd-4348-bbd9-f8d2cad3128b"
+}
