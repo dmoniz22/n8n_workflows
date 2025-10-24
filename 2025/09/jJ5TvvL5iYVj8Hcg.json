@@ -1,0 +1,413 @@
+{
+  "active": false,
+  "connections": {
+    "List Files in 'To-Process' Folder": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless (Email)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Files in 'To-Process' Folder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless (Email)": {
+      "main": [
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Paperless": {
+      "main": [
+        [
+          {
+            "node": "Move Processed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Files in 'To-Process' Folder1": {
+      "main": [
+        [
+          {
+            "node": "Download File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File1": {
+      "main": [
+        [
+          {
+            "node": "Upload to Paperless",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-02T16:03:30.376Z",
+  "id": "jJ5TvvL5iYVj8Hcg",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Google drive to paperless",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -96
+      ],
+      "id": "29163198-2d75-4446-a2b5-9161d40b6678"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "options": {}
+      },
+      "name": "List Files in 'To-Process' Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        48
+      ],
+      "id": "2369bf0c-87d2-40e4-85f5-7e0736bcee5a",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": "={{$json.id}}",
+        "options": {}
+      },
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        48
+      ],
+      "id": "0a11a367-b5b0-469e-81d5-ac97c1a402ae",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -192
+      ],
+      "id": "d3daaa48-fd1b-40c5-b855-ec5c84e299fd"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1_4UlO9c1qu7NEpq8GpLUH74tFTI7WGHn",
+          "mode": "url"
+        },
+        "event": "watchFolderUpdated"
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        -464
+      ],
+      "id": "cdecc712-ac68-4ba6-a7c0-415eeeb706fc",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://paperless.themonizes.com/api/documents/?format=json",
+        "options": {
+          "bodyContentType": "multipart-form-data",
+          "fullResponse": true
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {}
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Token 22051845d008ccaa308de6d9f6f947ded185ba51"
+            }
+          ]
+        }
+      },
+      "name": "Upload to Paperless (Email)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        48
+      ],
+      "id": "164dc936-0889-4dc4-b6d7-a6f8c64326af"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Download File').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1V1JeVwyk4gTo8ADhNgSIWcp9TQg6YgbE",
+          "mode": "url"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        96,
+        48
+      ],
+      "id": "6a57dd72-8696-4eab-9d3e-bbcabe938819",
+      "name": "Move file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://paperless.themonizes.com/api/documents/post_document/",
+        "options": {
+          "bodyContentType": "multipart-form-data"
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "document",
+              "value": "={{$binary.data}}"
+            },
+            {
+              "name": "title",
+              "value": "=={{$node[\"List Files in 'To-Process' Folder1\"].json[\"name\"]}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Basic ZG1vbml6Ok5ld2F5czFA"
+            }
+          ]
+        }
+      },
+      "name": "Upload to Paperless",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -464
+      ],
+      "id": "c6a2b18d-29ab-4587-916a-fbcdb5350b74"
+    },
+    {
+      "parameters": {
+        "operation": "move"
+      },
+      "name": "Move Processed File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -464
+      ],
+      "id": "79e577bb-f169-4708-905f-8539fe68780b"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "limit": 1,
+        "options": {}
+      },
+      "name": "List Files in 'To-Process' Folder1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -464
+      ],
+      "id": "8c574258-06f8-454a-815d-50d694553bc9",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "name": "Download File1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -464
+      ],
+      "id": "b099bf57-a3ae-4650-b660-f0416e145c6d",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2xp7sbRtwpXU3Q9q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -688
+      ],
+      "id": "7d5734ee-ee4d-4c8c-b20d-05558ff82916"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "file": "="
+      },
+      "type": "n8n-nodes-paperless-ngx.paperlessNgx",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -304
+      ],
+      "id": "7fe64311-a6d3-4498-8240-b88355d9c6ac",
+      "name": "Create a document",
+      "credentials": {
+        "paperlessNgxApi": {
+          "id": "awPsfitl5fYoPmSG",
+          "name": "Paperless account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n_workflows",
+  "repo_owner": "dmoniz22",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-02T16:03:30.381Z",
+      "updatedAt": "2025-09-02T16:03:30.381Z",
+      "role": "workflow:owner",
+      "workflowId": "jJ5TvvL5iYVj8Hcg",
+      "projectId": "WI0IP68OjrENkbwD"
+    }
+  ],
+  "staticData": {
+    "node:Google Drive Trigger": {
+      "lastTimeChecked": "2025-09-03T05:12:22Z"
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-28T18:10:05.000Z",
+  "versionId": "52e7436c-fd2c-42e7-8c5a-e82971c935b1"
+}
